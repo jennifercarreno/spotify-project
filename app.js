@@ -1,10 +1,13 @@
 const express = require("express")
 const {engine} = require('express-handlebars')
 const app = express();
+require('dotenv').config({path: '.env'});
+
 
 var request = require('request'); // "Request" library
 var client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
-var client_secret = '9c0c1e9c6c32422282a8c283e23dfa86'; // Your secret
+var client_secret = process.env.SECRET; // Your secret
+console.log("secret:" +  process.env.SECRET)
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
