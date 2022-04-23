@@ -9,6 +9,9 @@ var client_secret = '9c0c1e9c6c32422282a8c283e23dfa86'; // Your secret
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
+app.use(express.json());
+app.use(express.static('public'));
+
 
 var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
@@ -22,6 +25,7 @@ var authOptions = {
   };
 
 request.post(authOptions, function(error, response, body) {
+
 if (!error && response.statusCode === 200) {
 
     // use the access token to access the Spotify Web API
@@ -33,10 +37,21 @@ if (!error && response.statusCode === 200) {
     },
     json: true
     };
-    request.get(options, function(error, response, body) {
-    console.log(body);
-    });
+
 }
+
+    app.get('/', (req, res) => {
+
+        request.get(options, function(error, response, body) {
+            console.log(body);
+            console.log(body.display_name)
+            const test_body = body.display_name;
+            return res.render('home', { test_body } );
+        });
+        
+
+    });
+
 });
   
 
@@ -44,9 +59,6 @@ if (!error && response.statusCode === 200) {
 
 
 
-app.get('/', (req, res) => {
-    res.render('home');
 
-});
 
 app.listen(3000)
