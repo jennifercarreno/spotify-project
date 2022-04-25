@@ -66,7 +66,7 @@ app.post('/search', (req, res) => {
     if (!error && response.statusCode === 200){
       var token = body.access_token;
       var options = {
-      url: `https://api.spotify.com/v1/search?q=${search}&type=track`,
+      url: `https://api.spotify.com/v1/search?q=track:${search}&type=track&limit=30`,
       headers: {
           'Authorization': 'Bearer ' + token
       },
@@ -76,8 +76,8 @@ app.post('/search', (req, res) => {
 
     request.get(options, function(error, response, body) {
       const tracks = body.tracks.items
-      console.log(tracks.name)
-      // console.log(body.tracks.items);
+      // console.log(body.tracks.items)
+      console.log(body.tracks.items[0].album.images[0].url);
     
       return res.render('search-results', {search, tracks})
       
