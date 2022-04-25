@@ -7,15 +7,19 @@ require('dotenv').config({path: '.env'});
 var request = require('request'); // "Request" library
 var client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
 var client_secret = process.env.SECRET; // Your secret
-console.log("secret:" +  process.env.SECRET)
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
+// harry styles:
+// url: 'https://api.spotify.com/v1/artists/6KImCVD70vtIoJWnq6nGn3',
 
+
+//starts stuff with spotify api
 var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: {
@@ -27,36 +31,60 @@ var authOptions = {
     json: true
   };
 
-request.post(authOptions, function(error, response, body) {
+// WORKING API CALL
+app.get('/', (req, res) => {
 
-if (!error && response.statusCode === 200) {
+  request.post(authOptions, function(error, response, body){
 
-    // use the access token to access the Spotify Web API
-    var token = body.access_token;
-    var options = {
-    url: 'https://api.spotify.com/v1/users/paniz.k',
-    headers: {
-        'Authorization': 'Bearer ' + token
-    },
-    json: true
-    };
+    if (!error && response.statusCode === 200){
+      var token = body.access_token;
+      var options = {
+      url: 'https://api.spotify.com/v1/search?q=lover&type=track&artist=taylor%20swift',
+      headers: {
+          'Authorization': 'Bearer ' + token
+      },
+      json: true
+      }
+    }
 
-}
-
-    app.get('/', (req, res) => {
-
-        request.get(options, function(error, response, body) {
-            console.log(body);
-            console.log(body.display_name)
-            const test_body = body.display_name;
-            return res.render('home', { test_body } );
-        });
-        
-
+    request.get(options, function(error, response, body) {
+      // const artist_name = body.name
+      // console.log(body.tracks.items);
+      
     });
 
+  });
+
+  return res.render('home');
 });
   
+app.post('/search', (req, res) => {
+  // console.log(req.body.search);
+  let search = req.body.search
+  request.post(authOptions, function(error, response, body){
+
+    if (!error && response.statusCode === 200){
+      var token = body.access_token;
+      var options = {
+      url: `https://api.spotify.com/v1/search?q=${search}&type=track`,
+      headers: {
+          'Authorization': 'Bearer ' + token
+      },
+      json: true
+      }
+    }
+
+    request.get(options, function(error, response, body) {
+      const tracks = body.tracks.items
+      console.log(tracks.name)
+      // console.log(body.tracks.items);
+    
+      return res.render('search-results', {search, tracks})
+      
+    });
+
+  });
+});
 
 
 
