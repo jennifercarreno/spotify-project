@@ -14,6 +14,10 @@ app.set('views', './views');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+require('./controllers/playlists')(app);
+require('./data/app-db');
+
+
 
 // harry styles:
 // url: 'https://api.spotify.com/v1/artists/6KImCVD70vtIoJWnq6nGn3',
@@ -77,7 +81,7 @@ app.post('/search', (req, res) => {
     request.get(options, function(error, response, body) {
       const tracks = body.tracks.items
       // console.log(body.tracks.items)
-      console.log(body.tracks.items[0].album.images[0].url);
+      // console.log(body.tracks.items[0].album.images[0].url);
     
       return res.render('search-results', {search, tracks})
       
