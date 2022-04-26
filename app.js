@@ -5,6 +5,7 @@ require('dotenv').config({path: '.env'});
 
 
 var request = require('request'); // "Request" library
+const playlists = require("./controllers/playlists");
 var client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
 var client_secret = process.env.SECRET; // Your secret
 
@@ -16,6 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 require('./controllers/playlists')(app);
 require('./data/app-db');
+const Playlist = require('./models/playlist');
+
 
 
 
@@ -62,9 +65,15 @@ app.get('/', (req, res) => {
   return res.render('home');
 });
   
-app.post('/search', (req, res) => {
+app.post('/search', async(req, res) => {
+  try {
+
+  
   // console.log(req.body.search);
   let search = req.body.search
+  let playlists = await Playlist.find({}).lean()
+  console.log(playlists)
+
   request.post(authOptions, function(error, response, body){
 
     if (!error && response.statusCode === 200){
@@ -82,12 +91,15 @@ app.post('/search', (req, res) => {
       const tracks = body.tracks.items
       // console.log(body.tracks.items)
       // console.log(body.tracks.items[0].album.images[0].url);
-    
-      return res.render('search-results', {search, tracks})
+      return res.render('search-results', {search, tracks, playlists})
+
       
     });
-
+    
   });
+} catch (err) {
+  console.log(err.message);
+}
 });
 
 
