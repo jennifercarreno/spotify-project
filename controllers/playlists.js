@@ -1,6 +1,7 @@
 const Playlist = require('../models/playlist');
 
 var request = require('request'); // "Request" library
+const user = require('../models/user');
 var client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
 var client_secret = process.env.SECRET; // Your secret
 
@@ -26,9 +27,26 @@ module.exports = (app) => {
 
       // saves new playlist
       app.post('/playlist/new', (req, res) => {
-        const playlist = new Playlist(req.body);
-        playlist.save(() => res.redirect('/'));
-        console.log(playlist)
+        if (req.user) {
+          const userId = req.user._id;
+          const playlist = new Playlist(req.body);
+          playlist.created_by = userId;
+
+          // playlist.save(() => res.redirect('/playlists'));
+
+          playlist.save().then(() => user.findById(userId))
+          .then((user) => {
+            user.playlists.unshift(playlist);
+            user.save();
+
+            return res.redirect(`/playlist/${playlist._id}`)
+          })
+
+          // console.log(playlist)
+        } else {
+          return res.status(401); // UNAUTHORIZED
+        }
+        
     });
 
     // selecting playlists
@@ -96,7 +114,7 @@ module.exports = (app) => {
     // displays one playlist
     app.get('/playlist/:id', async (req, res) => {
         try {
-            const playlist = await Playlist.findById(req.params.id).lean()
+            const playlist = await Playlist.findById(req.params.id).lean().populate('created_by')
             return res.render('playlist-show', {playlist})
         } catch(err){
             console.log(err.message);
@@ -109,7 +127,7 @@ module.exports = (app) => {
         try {
             const currentUser = req.user;
 
-            const playlists = await Playlist.find({}).lean()
+            const playlists = await Playlist.find({}).lean().populate('created_by')
             return res.render('playlists', {playlists, currentUser})
         } catch(err) {
 

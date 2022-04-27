@@ -20,6 +20,11 @@ module.exports = app => {
         });
     });
 
+    app.get('/logout', (req, res) => {
+      res.clearCookie('nToken');
+      return res.redirect('/');
+    });
+    
     app.get('/login', (req, res) => res.render('login'));
 
     // LOGIN
@@ -51,6 +56,8 @@ app.post('/login', (req, res) => {
         console.log(err);
       });
   });
+
+
 
 };
   

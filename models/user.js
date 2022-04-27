@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const userSchema = new Schema({
   username: { type: String, required: true },
   password: { type: String, select: false },
+  playlists: [{ type: Schema.Types.ObjectId, ref: 'Playlist' }],
+
 }, { timestamps: true });
 
 userSchema.pre('save', function (next) {

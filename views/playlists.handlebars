@@ -3,5 +3,6 @@
 {{#each playlists}}
 
 <h3><a href='/playlist/{{this._id}}'>{{this.title}}</a></h3>
+<small>Created By: {{this.created_by.username}}</small>
 
 {{/each}}
