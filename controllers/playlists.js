@@ -17,20 +17,21 @@ var authOptions = {
 
 module.exports = (app) => {
 
-    // create new post 
+    // create new playlist 
 
-      //new post form
+      //new playlist form
       app.get('/playlist/new', (req, res) => {
         res.render('playlist-new');
        });
 
-      // saves new post
+      // saves new playlist
       app.post('/playlist/new', (req, res) => {
         const playlist = new Playlist(req.body);
         playlist.save(() => res.redirect('/'));
         console.log(playlist)
     });
 
+    // selecting playlists
     app.post('/playlist/choose', async (req, res) => {
         try {
             const playlists = await Playlist.find({}).lean()
@@ -44,20 +45,16 @@ module.exports = (app) => {
         
     });
 
+    // adding track to playlist
     app.post('/playlist/add', async (req, res) => {
         
         try {
 
             // GETS WHICH PLAYLIST WE SHOULD ADD TOO
             const playlist = await Playlist.findById({_id : req.body.playlist_id}).lean();
-            // console.log('PLAYLIST:' + playlist)
 
             // GETS WHICH TRACK WE WANTED TO ADD
             let track = req.body.track_id;
-
-            // console.log('TRACK:' + track)
-            // tracks = playlist.tracks
-
 
             request.post(authOptions, function(error, response, body){
 
@@ -73,18 +70,14 @@ module.exports = (app) => {
                 }
             
                 request.get(options, function(error, response, body) {
+                    // gets track object
                     track = body
-                    // console.log(body)
-                    // tracks.push(track)
-                    // console.log(playlist.tracks)
-                    console.log('PLAYLIST outside'  + playlist.tracks)
 
+                    // adds track to playlist
                     Playlist.findOneAndUpdate({_id : playlist._id}, {$push: {tracks:track}}).then((result) => {
-                        // console.log(result)
-                        console.log('PLAYLIST inside'  + playlist.tracks)
 
+                        // returns updated playlist
                         return res.redirect(`/playlist/${playlist._id}`)
-
 
                       }).catch ((err) => {
                         console.log(err.message);
@@ -94,14 +87,13 @@ module.exports = (app) => {
             
               });
 
-
-
             } catch (err) {
                 console.log(err.message);
                 }
-    
     });
 
+
+    // displays one playlist
     app.get('/playlist/:id', async (req, res) => {
         try {
             const playlist = await Playlist.findById(req.params.id).lean()
@@ -112,10 +104,13 @@ module.exports = (app) => {
 
     });
 
+    // displays all playlists
     app.get('/playlists', async (req, res) =>{
         try {
+            const currentUser = req.user;
+
             const playlists = await Playlist.find({}).lean()
-            return res.render('playlists', {playlists})
+            return res.render('playlists', {playlists, currentUser})
         } catch(err) {
 
         }

@@ -5,8 +5,12 @@
     <div class="m-auto">
         <input type="text" placeholder="search" id="search" name="search">
 
-        <button type="submit">Submit</button>
+        <button type="submit" class="btn btn-outline-success">Submit</button>
     </div>
+    {{#if currentUser}}
+    <p>if u can see this ur logged in</p>
+    {{/if}}
+
     
 
 </form>

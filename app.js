@@ -1,23 +1,28 @@
+require('dotenv').config({path: '.env'});
+
 const express = require("express")
 const {engine} = require('express-handlebars')
 const app = express();
-require('dotenv').config({path: '.env'});
-
-
-var request = require('request'); // "Request" library
-const playlists = require("./controllers/playlists");
-var client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
-var client_secret = process.env.SECRET; // Your secret
+const cookieParser = require('cookie-parser');
+const checkAuth = require('./middleware/checkAuth');
+const Playlist = require('./models/playlist');
+const request = require('request'); // "Request" library
+const client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
+const client_secret = process.env.SECRET; // Your secret
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(cookieParser());
+app.use(checkAuth);
+
 require('./controllers/playlists')(app);
+require('./controllers/auth.js')(app);
 require('./data/app-db');
-const Playlist = require('./models/playlist');
 
 
 
@@ -40,6 +45,8 @@ var authOptions = {
 
 // WORKING API CALL
 app.get('/', (req, res) => {
+  const currentUser = req.user;
+  console.log(currentUser)
 
   request.post(authOptions, function(error, response, body){
 
@@ -62,17 +69,18 @@ app.get('/', (req, res) => {
 
   });
 
-  return res.render('home');
+  return res.render('home', {currentUser});
 });
   
 app.post('/search', async(req, res) => {
   try {
+    const currentUser = req.user;
+    console.log(currentUser)
 
-  
   // console.log(req.body.search);
   let search = req.body.search
   let playlists = await Playlist.find({}).lean()
-  console.log(playlists)
+  // console.log(search)
 
   request.post(authOptions, function(error, response, body){
 
@@ -91,7 +99,10 @@ app.post('/search', async(req, res) => {
       const tracks = body.tracks.items
       // console.log(body.tracks.items)
       // console.log(body.tracks.items[0].album.images[0].url);
-      return res.render('search-results', {search, tracks, playlists})
+      const currentUser = req.user;
+      console.log(currentUser)
+
+      return res.render('search-results', {search, tracks, playlists, currentUser})
 
       
     });
