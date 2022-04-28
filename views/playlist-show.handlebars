@@ -1,5 +1,9 @@
+<div class="text-center">
 <h1>{{playlist.title}}</h1>
-<p>{{playlist.created_by.username}}</p>
+<p>Created By: {{playlist.created_by.username}}</p>
+</div>
+<div class="container">
+
 <ol>
     {{#each playlist.tracks}}
         <li>
@@ -27,8 +31,10 @@
 </ol>
 
 {{#if author}}
-    <form action="/playlist/search/{{playlist._id}}" method="POST">
+    <a href="/playlist/delete/{{playlist._id}}">Delete</a>
 
+    <form action="/playlist/search/{{playlist._id}}" method="POST">
+        <label>Add Songs to {{playlist.title}}</label> <br>
         <input type="text" placeholder="search" id="search" name="search">
         <button type="submit" class="btn btn-outline-success">Submit</button>
 
@@ -36,6 +42,8 @@
 {{/if}}
 
 {{#if search}} 
+<h2>Showing results for: {{search}}</h2>
+
 
 <ol>
             {{#each tracks}}
@@ -83,6 +91,8 @@
         </ol>
 
 {{/if}}
+
+</div>
 
 
 

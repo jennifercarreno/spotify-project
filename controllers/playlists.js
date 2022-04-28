@@ -145,10 +145,23 @@ module.exports = (app) => {
 
     });
 
-    // displays all playlists
     app.get('/playlists', async (req, res) =>{
+      try {
+       
+        const currentUser = req.user;
+        const playlists = await Playlist.find({}).lean().populate('created_by')
+        return res.render('playlists', {playlists, currentUser})
+        
+          
+      } catch(err) {
+          console.log(err.message);
+      }
+  });
+
+    // displays all playlists
+    app.get('/playlists/library/:id', async (req, res) =>{
         try {
-          if(req.user){
+          if(req.user._id == req.params.id){
             const currentUser = req.user;
             const playlists = await Playlist.find({'created_by': currentUser}).lean().populate('created_by')
             return res.render('playlists', {playlists, currentUser})
@@ -199,6 +212,22 @@ module.exports = (app) => {
       console.log(err.message);
     }
     });
+
+    app.get('/playlist/delete/:id', async(req, res) => {
+      try {
+        Playlist.findOneAndDelete({_id : req.params.id}).then((result) => {
+
+          // returns updated playlist
+          return res.redirect(`/playlists`)
+
+        }).catch ((err) => {
+          console.log(err.message);
+      });
+
+      } catch(err) {
+
+      }
+    })
 
 
 
