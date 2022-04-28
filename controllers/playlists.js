@@ -120,9 +120,22 @@ module.exports = (app) => {
             let author;
             const search = req.body.search;
             const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
+            const tracks = playlist.tracks
+            // console.log(tracks)
+
+            for (i in tracks) {
+              // adds playlist attribute to tracks
+              tracks[i].playlist = playlist._id;
+            
+            }  
 
             if(currentUser.username == playlist.created_by.username){
               author = true;
+              for (i in tracks) {
+                // adds playlist attribute to tracks
+                tracks[i].author = true;
+              
+              }  
               return res.render('playlist-show', {playlist, currentUser, search, author})
 
             } else {
@@ -227,7 +240,55 @@ module.exports = (app) => {
       } catch(err) {
 
       }
-    })
+    });
+
+    app.post('/playlist/deletesong', async(req, res) => {
+      try {
+
+        // GETS WHICH PLAYLIST WE SHOULD ADD TO
+        console.log('PLAYLIST ID: '+ req.body.playlist)
+        const playlist = await Playlist.findById({_id : req.body.playlist}).lean();
+
+        // GETS WHICH TRACK WE WANTED TO ADD
+        let track = req.body.track_id_song;
+        // console.log('TRACK ID: ' + track)
+
+        request.post(authOptions, function(error, response, body){
+
+            if (!error && response.statusCode === 200){
+              var token = body.access_token;
+              var options = {
+              url: `https://api.spotify.com/v1/tracks/${track}`,
+              headers: {
+                  'Authorization': 'Bearer ' + token
+              },
+              json: true
+              }
+            }
+        
+            request.get(options, function(error, response, body) {
+                // gets track object
+                track = body
+                console.log(track)
+
+                // adds track to playlist
+                Playlist.findOneAndUpdate({_id : playlist._id}, {$pull: {tracks:track}}).then((result) => {
+
+                    // returns updated playlist
+                    return res.redirect(`/playlist/${playlist._id}`)
+
+                  }).catch ((err) => {
+                    console.log(err.message);
+                });
+              
+            });
+        
+          });
+
+        } catch (err) {
+            console.log(err.message);
+            }
+});
 
 
 

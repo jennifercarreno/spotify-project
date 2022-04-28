@@ -43,8 +43,6 @@ var authOptions = {
 // WORKING API CALL
 app.get('/', (req, res) => {
   const currentUser = req.user;
-  const test = req.body.test;
-  console.log(test)
   // console.log(currentUser)
 
   return res.render('home', {currentUser});

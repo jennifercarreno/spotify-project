@@ -26,6 +26,21 @@
                     <p>{{this.name}}</p>
                     {{/each}}
                </div>
+
+            {{#if this.author}}
+               <div class="col-lg-3">
+                    {{!-- <a href="/playlist/delete-song/{{this._id}}">Remove Track</a> --}}
+                    <form action="/playlist/deletesong" method="POST">
+                        <input type="hidden" name="track_id_song" value="{{ this.id }}">
+                        <input type="hidden" name="playlist" value="{{ this.playlist }}">
+
+
+                        <input type="submit" value="Remove Track" class="btn">
+                    </form>
+
+               </div>
+            {{/if}}
+
         </li>
     {{/each}}
 </ol>
