@@ -41,6 +41,7 @@
 
       <ul class="nav navbar-nav ">
         {{#if currentUser}}
+        <li class="mx-2">{{currentUser.username}}</li> 
           <li><a href="/logout">Logout</a></li>
         {{else}}
           <li class="mx-2"><a href="/login">Login</a></li>

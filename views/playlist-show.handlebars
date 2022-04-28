@@ -1,5 +1,6 @@
 <h1>{{playlist.title}}</h1>
 <p>{{playlist.created_by.username}}</p>
+<small name="playlist_id">{{playlist._id}}</small>
 <ol>
     {{#each playlist.tracks}}
         <li>
@@ -25,3 +26,67 @@
         </li>
     {{/each}}
 </ol>
+
+    <form action="/playlist/search/{{playlist._id}}" method="POST">
+
+        <input type="text" placeholder="search" id="search" name="search">
+        <button type="submit" class="btn btn-outline-success">Submit</button>
+
+    </form>
+
+{{#if search}} 
+
+<ol>
+            {{#each tracks}}
+
+           <li>
+                <div class="row">
+
+                {{!-- DISPLAYS ALBUM COVER --}}
+
+               <div class="col-sm-1">
+                {{#with this.album.images.[2]}}
+                <img src={{this.url}}>
+                {{/with}}
+               </div>
+
+               <div class="col-lg-6">
+                {{!-- DISPLAYS TRACK NAME --}}
+                   <h3>{{this.name}}</h3>
+                   <small>{{this.id}}</small>
+
+                {{!-- DISPLAYS ARTIST --}}
+                   {{#each this.album.artists}}
+                    <p>{{this.name}}</p>
+                    {{/each}}
+               </div>
+               
+
+                <div class="col-lg-3">
+                    <form action="/playlist/add" method="POST">
+                    <input type="hidden" name="track_id" value="{{ this.id }}">
+                    <p>{{ this.playlist }}</p>
+                    <input type="hidden" name="playlist_id" value="{{ this.playlist }}">
+
+                    <input type="submit" value="Add to playlist" class="btn">
+                    </form>
+                    
+                </div>
+
+               
+
+                </div>
+
+           </li>
+
+            {{/each}}
+
+        </ol>
+
+{{/if}}
+
+
+
+
+                    
+

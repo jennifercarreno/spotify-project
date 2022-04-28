@@ -9,6 +9,7 @@ const Playlist = require('./models/playlist');
 const request = require('request'); // "Request" library
 const client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
 const client_secret = process.env.SECRET; // Your secret
+const User = require('./models/user');
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -27,10 +28,6 @@ require('./data/app-db');
 
 
 
-// harry styles:
-// url: 'https://api.spotify.com/v1/artists/6KImCVD70vtIoJWnq6nGn3',
-
-
 //starts stuff with spotify api
 var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
@@ -46,30 +43,12 @@ var authOptions = {
 // WORKING API CALL
 app.get('/', (req, res) => {
   const currentUser = req.user;
-  console.log(currentUser)
-
-  request.post(authOptions, function(error, response, body){
-
-    if (!error && response.statusCode === 200){
-      var token = body.access_token;
-      var options = {
-      url: 'https://api.spotify.com/v1/search?q=lover&type=track&artist=taylor%20swift',
-      headers: {
-          'Authorization': 'Bearer ' + token
-      },
-      json: true
-      }
-    }
-
-    request.get(options, function(error, response, body) {
-      // const artist_name = body.name
-      // console.log(body.tracks.items);
-      
-    });
-
-  });
+  const test = req.body.test;
+  console.log(test)
+  // console.log(currentUser)
 
   return res.render('home', {currentUser});
+
 });
   
 app.post('/search', async(req, res) => {
@@ -79,6 +58,7 @@ app.post('/search', async(req, res) => {
 
   // console.log(req.body.search);
   let search = req.body.search
+  
   let playlists = await Playlist.find({}).lean()
   // console.log(search)
 
@@ -102,7 +82,7 @@ app.post('/search', async(req, res) => {
       const currentUser = req.user;
       console.log(currentUser)
 
-      return res.render('search-results', {search, tracks, playlists, currentUser})
+      return res.render('search-results', {search, tracks, currentUser})
 
       
     });

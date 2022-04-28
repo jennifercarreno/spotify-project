@@ -1,8 +1,11 @@
 <h1>Showing results for: {{search}}</h1>
 
     <div class="container mx-auto">
+        <form action="/playlist/add/{{playlist._id}}" method="POST">
+        
         <ol>
             {{#each tracks}}
+
 
            <li>
                 <div class="row">
@@ -24,16 +27,12 @@
                     <p>{{this.name}}</p>
                     {{/each}}
                </div>
+                <input type="hidden" name="track_id" value="{{ this }}">
+
+                 <input type="submit" value="Select" class="btn">
+
                
 
-                <div class="col-lg-3">
-                    <form action="/playlist/choose" method="POST">
-                    <input type="hidden" name="track_id" value="{{ this.id }}">
-                    
-                    <input type="submit" value="Add to playlist" class="btn">
-                    </form>
-                    
-                </div>
 
                
 
@@ -44,6 +43,7 @@
             {{/each}}
 
         </ol>
+                </form>
 
     </div>
 
