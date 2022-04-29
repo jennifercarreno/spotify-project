@@ -23,6 +23,8 @@ app.use(checkAuth);
 
 require('./controllers/playlists')(app);
 require('./controllers/auth.js')(app);
+require('./controllers/spotify-account.js')(app);
+
 require('./data/app-db');
 
 
