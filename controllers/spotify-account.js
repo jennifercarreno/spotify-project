@@ -3,6 +3,8 @@ const client_secret = process.env.SECRET; // Your secret
 var redirect_uri = 'http://localhost:3000/callback';
 const querystring = require ('querystring');
 const request = require('request'); // "Request" library
+const SpotifyWebApi = require('spotify-web-api-node');
+var code;
 
 function randomString(length) {
     var result           = '';
@@ -17,6 +19,7 @@ function randomString(length) {
 module.exports = (app) => {
 
 app.get('/loginspotify', function(req, res) {
+  console.log('PLAYLIST ID: '+ req.body.playlist)
 
   var state = randomString(16);
   var scope = 'user-read-private user-read-email playlist-modify-public';
@@ -29,11 +32,13 @@ app.get('/loginspotify', function(req, res) {
       redirect_uri: redirect_uri,
       state: state
     }));
+
+    
 });
 
 app.get('/callback', function(req, res, next) {
 
-    var code = req.query.code || null;
+    code = req.query.code || null;
     var state = req.query.state || null;
   
     if (state === null) {
@@ -60,6 +65,7 @@ app.get('/callback', function(req, res, next) {
   
           var access_token = body.access_token,
               refresh_token = body.refresh_token;
+              
   
           var options = {
             url: 'https://api.spotify.com/v1/me',
@@ -67,10 +73,25 @@ app.get('/callback', function(req, res, next) {
             json: true
           };
   
+          // const spotifyApi = new SpotifyWebApi({
+          //   accessToken: access_token
+          // });
+
+          // spotifyApi.createPlaylist('My playlist', { 'description': 'My description', 'public': true })
+          // .then(function(data) {
+          //   console.log('Created playlist!');
+          // }, function(err) {
+          //   console.log('Something went wrong!', err);
+          // });
+      
+          
           // use the access token to access the Spotify Web API
           request.get(options, function(error, response, body) {
             console.log(body);
+
           });
+
+          
   
           // we can also pass the token to the browser to make requests from there
           res.redirect('/#' +
@@ -88,6 +109,12 @@ app.get('/callback', function(req, res, next) {
     };
     });
 
-  }
+    app.post('/publish', (req, res) => {
+      console.log(req.body.playlist)
+
+      
+  });
+
+}
   
 

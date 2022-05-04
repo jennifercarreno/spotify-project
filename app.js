@@ -54,13 +54,13 @@ app.get('/', (req, res) => {
 app.post('/search', async(req, res) => {
   try {
     const currentUser = req.user;
-    console.log(currentUser)
-
+    // console.log(currentUser)
+    const playlists = await Playlist.find({'created_by': currentUser}).lean().populate('created_by')
+    console.log(playlists)
   // console.log(req.body.search);
   let search = req.body.search
   
-  let playlists = await Playlist.find({}).lean()
-  // console.log(search)
+  // console.log(playlists)
 
   request.post(authOptions, function(error, response, body){
 
@@ -77,9 +77,20 @@ app.post('/search', async(req, res) => {
 
     request.get(options, function(error, response, body) {
       const tracks = body.tracks.items
-      // console.log(body.tracks.items)
-      // console.log(body.tracks.items[0].album.images[0].url);
       const currentUser = req.user;
+
+      for (i in tracks) {
+        tracks[i].playlist = []
+
+        for (n in playlists) {
+          tracks[i].playlist.push(playlists[n]);
+          console.log(tracks[i].playlist)
+
+        }
+      }
+
+      
+
       console.log(currentUser)
 
       return res.render('search-results', {search, tracks, currentUser})

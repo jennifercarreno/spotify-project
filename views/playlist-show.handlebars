@@ -17,7 +17,7 @@
                 {{/with}}
                </div>
 
-               <div class="col-lg-6">
+               <div class="col-lg-9">
                 {{!-- DISPLAYS TRACK NAME --}}
                    <h3>{{this.name}}</h3>
 
@@ -28,7 +28,7 @@
                </div>
 
             {{#if this.author}}
-               <div class="col-lg-3">
+               <div class="col-lg-2">
                     {{!-- <a href="/playlist/delete-song/{{this._id}}">Remove Track</a> --}}
                     <form action="/playlist/deletesong" method="POST">
                         <input type="hidden" name="track_id_song" value="{{ this.id }}">
@@ -54,6 +54,13 @@
         <button type="submit" class="btn btn-outline-success">Submit</button>
 
     </form>
+
+
+    <form action="/loginspotify" method="get">
+        <input type="hidden" name="playlist" value="{{playlist._id}}">
+        <button type="submit" class="btn btn-outline-success">Post to Spotify</button>
+
+    </form>
 {{/if}}
 
 {{#if search}} 
@@ -74,7 +81,7 @@
                 {{/with}}
                </div>
 
-               <div class="col-lg-6">
+               <div class="col-lg-9">
                 {{!-- DISPLAYS TRACK NAME --}}
                    <h3>{{this.name}}</h3>
 
@@ -85,12 +92,12 @@
                </div>
                
 
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <form action="/playlist/add" method="POST">
                     <input type="hidden" name="track_id" value="{{ this.id }}">
                     <input type="hidden" name="playlist_id" value="{{ this.playlist }}">
 
-                    <input type="submit" value="Add to playlist" class="btn">
+                    <input type="submit" value="Add to playlist" class="btn btn-outline-success">
                     </form>
                     
                 </div>

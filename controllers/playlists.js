@@ -51,19 +51,6 @@ module.exports = (app) => {
         
     });
 
-    // selecting playlists
-    app.post('/playlist/choose', async (req, res) => {
-        try {
-            const currentUser = req.user;
-            const playlists = await Playlist.find({'created_by': currentUser}).lean()
-            const track = req.body.track_id;
-            return res.render('choose-playlist', {track, playlists, currentUser} )
-        } catch (err) {
-            console.log(err.message);
-          }
-        
-    });
-
     // adding track to playlist
     app.post('/playlist/add', async (req, res) => {
         
@@ -271,7 +258,7 @@ module.exports = (app) => {
                 track = body
                 console.log(track)
 
-                // adds track to playlist
+                // removes track from playlist
                 Playlist.findOneAndUpdate({_id : playlist._id}, {$pull: {tracks:track}}).then((result) => {
 
                     // returns updated playlist

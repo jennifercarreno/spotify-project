@@ -15,7 +15,7 @@
                 {{/with}}
                </div>
 
-               <div class="col-lg-6">
+               <div class="col-lg-8">
                 {{!-- DISPLAYS TRACK NAME --}}
                    <h3>{{this.name}}</h3>
 
@@ -27,10 +27,15 @@
                
 
                 <div class="col-lg-3">
-                    <form action="/playlist/choose" method="POST">
+                    <form action="/playlist/add" method="POST">
                     <input type="hidden" name="track_id" value="{{ this.id }}">
+                    <select name="playlist_id">
+                        {{#each this.playlist}}
+                        <option value="{{this._id}}">{{this.title}}</option>
+                        {{/each}}
+                    </select>
                     
-                    <input type="submit" value="Add to playlist" class="btn">
+                    <input type="submit" value="Add to playlist" class="btn btn-outline-success">
                     </form>
                     
                 </div>
