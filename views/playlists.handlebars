@@ -2,17 +2,19 @@
 
 {{#if library}}
 <h1>Your Library</h1>
-{{else}}
-<h1>All Playlists</h1>
-{{/if}}
-
 <strong ><a href="/playlist/new">New Playlist</a> </strong>
+
+{{else}}
+<h1>All Public Playlists</h1>
+{{/if}}
 
 {{#each displayed_playlists}}
 
 <h3 class="pt-4"><a href='/playlist/{{this._id}}'>{{this.title}}</a></h3>
-<small>Created By: {{this.created_by.username}}</small>
+<small>By: {{this.created_by.username}}</small><br>
 
 {{/each}}
+
+
 
 </div>

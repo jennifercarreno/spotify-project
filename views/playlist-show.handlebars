@@ -57,8 +57,9 @@
 </ol>
 
 {{#if author}}
-    <a href="/playlist/delete/{{playlist._id}}">Delete Playlist</a>
 
+    <a href="/playlist/delete/{{playlist._id}}" onclick="return confirm('Are you sure?')">Delete Playlist</a>
+ 
 
     <form action="/playlist/{{playlist._id}}/publish" method="POST">
         {{!-- <input type="hidden" name="playlist" value="{{playlist._id}}"> --}}
@@ -118,6 +119,9 @@
 
 {{/if}}
 
+
+	
+	
 </div>
 
 

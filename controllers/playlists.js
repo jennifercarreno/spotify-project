@@ -150,13 +150,14 @@ module.exports = (app) => {
         let displayed_playlists = []
 
         for (i in playlists) {
-          console.log("CURRENT PLAYLIST: " + playlists[i].title + ": " + playlists[i].published)
-          if (playlists[i].published = true){
+          if (playlists[i].published == true){
+            console.log("CURRENT PLAYLIST: " + playlists[i].title + ": " + playlists[i].published)
             displayed_playlists.push(playlists[i])
-            return res.render('playlists', {displayed_playlists, currentUser})          
 
           }
         }
+        return res.render('playlists', {displayed_playlists, currentUser})          
+
       } catch(err) {
           console.log(err.message);
       }
@@ -223,12 +224,13 @@ module.exports = (app) => {
 // deletes a playlist
     app.get('/playlist/delete/:id', async(req, res) => {
       try {
-        Playlist.findOneAndDelete({_id : req.params.id}).then((result) => {
-          return res.redirect(`/playlists`)
 
-        }).catch ((err) => {
-          console.log(err.message);
+      Playlist.findOneAndDelete({_id : req.params.id}).then((result) => {
+    
+      }).catch ((err) => {
+        console.log(err.message);
       });
+      return res.redirect(`/playlists`)
 
       } catch(err) {
 
