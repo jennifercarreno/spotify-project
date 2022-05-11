@@ -1,14 +1,23 @@
-<div class="text-center">
-<h1>{{playlist.title}}</h1>
-<p>{{playlist.description}}</p>
-<p>Created By: {{playlist.created_by.username}}</p>
-</div>
+
 <div class="container">
+    
+    <div class="row container pt-3 pb-5">
+        {{#with playlist.tracks.[0].album.images.[0]}}
+            <img src={{this.url}} class="col-lg-3" >
+        {{/with}}
+        <div class="col-lg-9 py-3">
+            <h1>{{playlist.title}}</h1>
+            <p>{{playlist.description}}</p>
+            <p>By: {{playlist.created_by.username}}</p>
+        </div>
+        
+    </div>
+
 
 {{#if author}}
-<label>Add Songs to {{playlist.title}}</label> <br>
+<label>Add Songs to  <strong>{{playlist.title}}</strong></label> <br>
 <div class="row btn-group">
-    <form action="/playlist/search/{{playlist._id}}" method="POST" class="my-4 d-flex">
+    <form action="/playlist/search/{{playlist._id}}" method="POST" class="my-3 d-flex">
         
         <input type="text" placeholder="search" id="search" name="search" class="form-control">
         <button type="submit" class="btn btn-outline-success">Search</button>
@@ -17,10 +26,8 @@
     <span class="sr-only"></span>
     </button>
     <div class="dropdown-menu">
-        <a href="/playlist/delete/{{playlist._id}}" onclick="return confirm('Are you sure you want to delete this playlist?')">Delete Playlist</a>
-        <a class="dropdown-item" href="#">Edit Playlist</a>
-        <div class="dropdown-divider"></div>
-        <a href="/playlist/{{playlist._id}}/publish" onclick="return confirm('Are you sure you want to publish this playlist?')">Publish Playlist</a>
+        <a href="/playlist/delete/{{playlist._id}}" onclick="return confirm('Are you sure you want to delete this playlist?')" class="dropdown-item">Delete Playlist</a>
+        <a href="/playlist/{{playlist._id}}/publish" onclick="return confirm('Are you sure you want to publish this playlist?')" class="dropdown-item">Publish Playlist</a>
     </div>
 
     </form>
