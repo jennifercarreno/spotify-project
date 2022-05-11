@@ -147,7 +147,16 @@ module.exports = (app) => {
       try {
         const currentUser = req.user;
         const playlists = await Playlist.find({}).lean().populate('created_by')
-        return res.render('playlists', {playlists, currentUser})          
+        let displayed_playlists = []
+
+        for (i in playlists) {
+          console.log("CURRENT PLAYLIST: " + playlists[i].title + ": " + playlists[i].published)
+          if (playlists[i].published = true){
+            displayed_playlists.push(playlists[i])
+            return res.render('playlists', {displayed_playlists, currentUser})          
+
+          }
+        }
       } catch(err) {
           console.log(err.message);
       }
@@ -159,15 +168,15 @@ module.exports = (app) => {
           if(req.user._id == req.params.id){
             //gets all playlists by the current user
             const currentUser = req.user;
-            const playlists = await Playlist.find({'created_by': currentUser}).lean().populate('created_by')
+            const displayed_playlists = await Playlist.find({'created_by': currentUser}).lean().populate('created_by')
             const library = true
             
-            return res.render('playlists', {playlists, currentUser, library})
+            return res.render('playlists', {displayed_playlists, currentUser, library})
 
           } else {
             const currentUser = req.user;
-            const playlists = await Playlist.find({}).lean().populate('created_by')
-            return res.render('playlists', {playlists, currentUser})
+            const displayed_playlists = await Playlist.find({}).lean().populate('created_by')
+            return res.render('playlists', {displayed_playlists, currentUser})
           }
             
         } catch(err) {
