@@ -8,12 +8,29 @@
 <h1>All Public Playlists</h1>
 {{/if}}
 
-{{#each displayed_playlists}}
+    <div class="row">
+    {{#each displayed_playlists}}
+   
+    <div class="card col-lg-4 py-3" style="width: 16rem;">
+       
+        {{#with this.tracks.[0].album.images.[0]}}
+            <img class="card-img-top"src={{this.url}}>
+        {{/with}}
+        <div class="card-body">
+        <h3 class="pt-4"><a href='/playlist/{{this._id}}'>{{this.title}}</a></h3>
+        <small>By: {{this.created_by.username}}</small><br>       
+        </div>
 
-<h3 class="pt-4"><a href='/playlist/{{this._id}}'>{{this.title}}</a></h3>
-<small>By: {{this.created_by.username}}</small><br>
+        </div>
 
-{{/each}}
+
+        
+
+    
+
+    {{/each}}
+    </div>
+
 
 
 
