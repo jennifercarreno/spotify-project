@@ -28,8 +28,6 @@ require('./controllers/spotify-account.js')(app);
 require('./data/app-db');
 
 
-
-
 //starts stuff with spotify api
 var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
@@ -42,26 +40,26 @@ var authOptions = {
     json: true
   };
 
-// WORKING API CALL
+// home page
 app.get('/', (req, res) => {
   const currentUser = req.user;
   // console.log(currentUser)
-
   return res.render('home', {currentUser});
 
 });
   
+//search
 app.post('/search', async(req, res) => {
   try {
     const currentUser = req.user;
-    // console.log(currentUser)
+
+    //gets all playlists of current user
     const playlists = await Playlist.find({'created_by': currentUser}).lean().populate('created_by')
     console.log(playlists)
-  // console.log(req.body.search);
-  let search = req.body.search
+    let search = req.body.search
   
-  // console.log(playlists)
 
+    //searches for tracks
   request.post(authOptions, function(error, response, body){
 
     if (!error && response.statusCode === 200){
@@ -76,9 +74,12 @@ app.post('/search', async(req, res) => {
     }
 
     request.get(options, function(error, response, body) {
+
+      //gets tracks
       const tracks = body.tracks.items
       const currentUser = req.user;
 
+      // "assigns" playlists to tracks
       for (i in tracks) {
         tracks[i].playlist = []
 
@@ -89,19 +90,16 @@ app.post('/search', async(req, res) => {
         }
       }
 
-      
-
-      console.log(currentUser)
-
       return res.render('search-results', {search, tracks, currentUser})
-
       
     });
     
   });
+
 } catch (err) {
   console.log(err.message);
 }
+
 });
 
 

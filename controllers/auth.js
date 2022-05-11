@@ -35,13 +35,13 @@ app.post('/login', (req, res) => {
       .then((user) => {
         if (!user) {
           // User not found
-          return res.status(401).send({ message: 'Wrong Username or Password' });
+          return res.status(401).send({ message: 'User not found' });
         }
         // Check the password
         user.comparePassword(password, (err, isMatch) => {
           if (!isMatch) {
             // Password does not match
-            return res.status(401).send({ message: 'Wrong Username or password' });
+            return res.status(401).send({ message: 'Wrong  password' });
           }
           // Create a token
           const token = jwt.sign({ _id: user._id, username: user.username }, process.env.SECRET, {

@@ -1,10 +1,18 @@
 <div class="container">
+
+{{#if library}}
+<h1>Your Library</h1>
+{{else}}
 <h1>All Playlists</h1>
+{{/if}}
+
+<strong ><a href="/playlist/new">New Playlist</a> </strong>
 
 {{#each playlists}}
 
-<h3><a href='/playlist/{{this._id}}'>{{this.title}}</a></h3>
+<h3 class="pt-4"><a href='/playlist/{{this._id}}'>{{this.title}}</a></h3>
 <small>Created By: {{this.created_by.username}}</small>
 
 {{/each}}
+
 </div>

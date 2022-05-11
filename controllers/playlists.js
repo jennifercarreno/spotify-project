@@ -1,10 +1,11 @@
 const Playlist = require('../models/playlist');
 var request = require('request'); // "Request" library
-var Handlebars = require('Handlebars');
+// var Handlebars = require('Handlebars');
 const user = require('../models/user');
 var client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
 var client_secret = process.env.SECRET; // Your secret
 
+//spotiify api auth
 var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: {
@@ -33,8 +34,9 @@ module.exports = (app) => {
           const userId = req.user._id;
           const playlist = new Playlist(req.body);
           playlist.created_by = userId;
+          playlist.published = false;
 
-          playlist.save(() => res.redirect('/playlists'));
+          playlist.save(() => res.redirect(`/playlist/${playlist._id}`));
 
           playlist.save().then(() => user.findById(userId))
           .then((user) => {
@@ -59,7 +61,7 @@ module.exports = (app) => {
             // GETS WHICH PLAYLIST WE SHOULD ADD TO
             const playlist = await Playlist.findById({_id : req.body.playlist_id}).lean();
 
-            // GETS WHICH TRACK WE WANTED TO ADD
+            // GETS WHICH TRACK WE WANT TO ADD
             let track = req.body.track_id;
 
             request.post(authOptions, function(error, response, body){
@@ -108,7 +110,7 @@ module.exports = (app) => {
             const search = req.body.search;
             const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
             const tracks = playlist.tracks
-            // console.log(tracks)
+            console.log("PLAYLIST PUBLISHED: " + playlist.published)
 
             for (i in tracks) {
               // adds playlist attribute to tracks
@@ -116,28 +118,23 @@ module.exports = (app) => {
             
             }  
 
-            if(currentUser.username == playlist.created_by.username){
+            // checks to see if current user created the playlist
+            if((currentUser.username == playlist.created_by.username)&&(playlist.published == false)){
               author = true;
               for (i in tracks) {
-                // adds playlist attribute to tracks
                 tracks[i].author = true;
-              
               }  
               return res.render('playlist-show', {playlist, currentUser, search, author})
-
             } else {
               return res.render('playlist-show', {playlist, currentUser, search})
-
             }
+
           } else {
             const currentUser = req.user;
             const search = req.body.search;
             const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
             return res.render('playlist-show', {playlist, currentUser, search})
-
-
           }
-            
             
         } catch(err){
             console.log(err.message);
@@ -145,26 +142,27 @@ module.exports = (app) => {
 
     });
 
+// displays all playlists
     app.get('/playlists', async (req, res) =>{
       try {
-       
         const currentUser = req.user;
         const playlists = await Playlist.find({}).lean().populate('created_by')
-        return res.render('playlists', {playlists, currentUser})
-        
-          
+        return res.render('playlists', {playlists, currentUser})          
       } catch(err) {
           console.log(err.message);
       }
   });
 
-    // displays all playlists
+    
     app.get('/playlists/library/:id', async (req, res) =>{
         try {
           if(req.user._id == req.params.id){
+            //gets all playlists by the current user
             const currentUser = req.user;
             const playlists = await Playlist.find({'created_by': currentUser}).lean().populate('created_by')
-            return res.render('playlists', {playlists, currentUser})
+            const library = true
+            
+            return res.render('playlists', {playlists, currentUser, library})
 
           } else {
             const currentUser = req.user;
@@ -177,7 +175,7 @@ module.exports = (app) => {
         }
     });
 
-
+// search in playlist
     app.post('/playlist/search/:id', async(req, res) => {
       try {
         const currentUser = req.user;
@@ -213,11 +211,10 @@ module.exports = (app) => {
     }
     });
 
+// deletes a playlist
     app.get('/playlist/delete/:id', async(req, res) => {
       try {
         Playlist.findOneAndDelete({_id : req.params.id}).then((result) => {
-
-          // returns updated playlist
           return res.redirect(`/playlists`)
 
         }).catch ((err) => {
@@ -275,6 +272,41 @@ module.exports = (app) => {
         } catch (err) {
             console.log(err.message);
             }
+});
+
+//publish a playlist
+app.post('/playlist/:id/publish', async (req, res) => {
+  try {
+    if (req.user) {
+      const currentUser = req.user;
+      
+      const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
+      console.log("SELECTED PLAYLIST: " + playlist.title)
+      
+      // checks to see if current user created the playlist
+      if(currentUser.username == playlist.created_by.username){
+        playlist.published = true;
+        console.log("PUBLISHED: " + playlist.published)
+        Playlist.findOneAndUpdate({_id : playlist._id}, {published: true}).then((result) => {
+        res.redirect(`/playlist/${playlist._id}`)}).catch ((err) => {
+          console.log(err.message);
+      });
+
+      } else {
+        return res.render('playlist-show', {playlist, currentUser, search})
+      }
+
+    } else {
+      const currentUser = req.user;
+      const search = req.body.search;
+      const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
+      return res.render('playlist-show', {playlist, currentUser, search})
+    }
+      
+  } catch(err){
+      console.log(err.message);
+  }
+
 });
 
 

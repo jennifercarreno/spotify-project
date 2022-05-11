@@ -4,6 +4,17 @@
 </div>
 <div class="container">
 
+{{#if author}}
+
+    <form action="/playlist/search/{{playlist._id}}" method="POST" class="my-4">
+        <label>Add Songs to {{playlist.title}}</label> <br>
+        <input type="text" placeholder="search" id="search" name="search">
+        <button type="submit" class="btn btn-outline-success">Search</button>
+
+    </form>
+
+{{/if}}
+
 <ol>
     {{#each playlist.tracks}}
         <li>
@@ -48,17 +59,10 @@
 {{#if author}}
     <a href="/playlist/delete/{{playlist._id}}">Delete Playlist</a>
 
-    <form action="/playlist/search/{{playlist._id}}" method="POST">
-        <label>Add Songs to {{playlist.title}}</label> <br>
-        <input type="text" placeholder="search" id="search" name="search">
-        <button type="submit" class="btn btn-outline-success">Submit</button>
 
-    </form>
-
-
-    <form action="/loginspotify" method="get">
-        <input type="hidden" name="playlist" value="{{playlist._id}}">
-        <button type="submit" class="btn btn-outline-success">Post to Spotify</button>
+    <form action="/playlist/{{playlist._id}}/publish" method="POST">
+        {{!-- <input type="hidden" name="playlist" value="{{playlist._id}}"> --}}
+        <button type="submit" class="btn btn-outline-success">Burn this CD</button>
 
     </form>
 {{/if}}
