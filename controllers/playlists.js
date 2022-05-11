@@ -286,7 +286,7 @@ module.exports = (app) => {
 });
 
 //publish a playlist
-app.post('/playlist/:id/publish', async (req, res) => {
+app.get('/playlist/:id/publish', async (req, res) => {
   try {
     if (req.user) {
       const currentUser = req.user;
