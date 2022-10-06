@@ -2,7 +2,9 @@
 const mongoose = require('mongoose');
 assert = require('assert'); 
 
-const url = 'mongodb+srv://heroku:859JICcqZCDCpgXf@cluster0.pgw7x.mongodb.net/?retryWrites=true&w=majority';
+
+
+const url = 'mongodb+srv://jennifer:C5uZM1OWSh4C7O3V@cluster0.gniyick.mongodb.net/?retryWrites=true&w=majority';
 mongoose.connect(
   url,
   {
