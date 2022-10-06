@@ -109,3 +109,4 @@ app.post('/search', async(req, res) => {
 
 
 app.listen(3001)
+app.run(host='0.0.0.0')
