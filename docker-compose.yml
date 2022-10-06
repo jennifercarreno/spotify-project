@@ -9,8 +9,8 @@ services:
       - ./:/code
   mongo:
     image: mongo
-    # ports:
-    #   - 3001:3001
+    ports:
+      - 27017:27017
     volumes:
       - mongodb:/data/db
 volumes:
