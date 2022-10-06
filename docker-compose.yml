@@ -3,8 +3,8 @@ services:
   node:
     restart: always
     build: .
-    # ports:
-    #   - 3001:3001
+    ports:
+      - 3001:3001
     volumes:
       - ./:/code
   mongo:
