@@ -296,6 +296,36 @@ app.get('/playlist/:id/publish', async (req, res) => {
       
       // checks to see if current user created the playlist
       if(currentUser.username == playlist.created_by.username){
+
+        request.post(authOptions, function(error, response, body) {
+          if (!error && response.statusCode === 200) {
+        
+            // use the access token to access the Spotify Web API
+            var token = 'BQCquyBOfiAXlS-npLkrAi3Gs8yEYGqubkKGK-joZzEVu2s89s5s7Y3tw71z4LdK14AnhTDENQgEh4fJwzYbSkvvJDrzhWSDsAZBDNitZQZtNYJOQ5LbLymplWQHLtEpGv6b-8yy4oXahwo88vR6tD67zCOzC9gIePXreFGp4_RCblzsrnUduTGhOaR26BJTrlgpz2Q7nVPlekLHTUmub2DWWJLZobVT0pELBCMSHEaXe6ANF1kHkp1n5YPVAK9y';
+            var options = {
+              url: 'https://api.spotify.com/v1/users/313oodjlqlgtvp6joqiomhfumlyq/playlists',
+              
+              headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+              },
+
+              body: JSON.stringify({
+                  'name': playlist.title,
+                  'description': 'This CD was burned on burnify. ' + playlist.description,
+                  'public': true
+              }),
+              dataType:'json',
+              
+              
+            };
+
+            request.post(options, function(error, response, body) {
+              console.log(body);
+            });
+          }});
+
+
         playlist.published = true;
         console.log("PUBLISHED: " + playlist.published)
         Playlist.findOneAndUpdate({_id : playlist._id}, {published: true}).then((result) => {
