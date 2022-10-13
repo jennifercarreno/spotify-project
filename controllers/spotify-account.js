@@ -1,6 +1,6 @@
-var client_id = '3d0b95c610624b5d946ad0db07b6b683';
-const client_secret = process.env.SECRET; // Your secret
-var redirect_uri = 'http://localhost:3000/callback';
+var client_id = '4889e43cc0dd4792938fe5cee78fd00d';
+const client_secret = process.env.SPOTIFY_SECRET; // Your secret
+var redirect_uri = 'http://localhost:3001/callback';
 const querystring = require ('querystring');
 const request = require('request'); // "Request" library
 const SpotifyWebApi = require('spotify-web-api-node');
@@ -87,7 +87,7 @@ app.get('/callback', function(req, res, next) {
           
           // use the access token to access the Spotify Web API
           request.get(options, function(error, response, body) {
-            console.log(body);
+            console.log(body + access_token);
 
           });
 
@@ -106,6 +106,11 @@ app.get('/callback', function(req, res, next) {
             }));
         }
       });
+      // request.post('users/313oodjlqlgtvp6joqiomhfumlyq/playlists', function(error, response, body) {
+      //   "name": "New Playlist",
+      //   "description": "New playlist description",
+      //   "public": false
+      // })
     };
     });
 
@@ -118,3 +123,21 @@ app.get('/callback', function(req, res, next) {
 }
   
 
+// //{
+//   country: 'US',
+//   display_name: 'Burnify',
+//   email: 'jennifer.carreno@students.dominican.edu',
+//   explicit_content: { filter_enabled: false, filter_locked: false },
+//   external_urls: {
+//     spotify: 'https://open.spotify.com/user/313oodjlqlgtvp6joqiomhfumlyq'
+//   },
+//   followers: { href: null, total: 0 },
+//   href: 'https://api.spotify.com/v1/users/313oodjlqlgtvp6joqiomhfumlyq',
+//   id: '313oodjlqlgtvp6joqiomhfumlyq',
+//   images: [],
+//   product: 'open',
+//   type: 'user',
+//   uri: 'spotify:user:313oodjlqlgtvp6joqiomhfumlyq'
+// }//
+
+// access token = BQDoJxc9t5wx3xqinf9UHu32tP-_pmjKR8A9chv5kN45v5seqfCu4pocPSe7px2VgJW-8NeIORLvIPyyQIG-pOTQE-ZvjKugFqmtSTwuVis0dwHa0MGb0_YntbV2Ma8Io0kkJewJMjikTo4RuCAVAVsNAl8glkPuVyYVdii17jBagT5t7PXs8iZu8uLTZhCfj2Tv8574Pb-dtTs3bB9GZ3OisR41g1MQef49Jv_ejqBuo2xI8i4

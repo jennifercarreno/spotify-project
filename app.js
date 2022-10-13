@@ -24,6 +24,8 @@ app.use(checkAuth);
 require('./controllers/playlists')(app);
 require('./controllers/auth.js')(app);
 require('./controllers/spotify-account.js')(app);
+require('./controllers/spotify-test.js')(app);
+
 
 require('./data/app-db');
 
@@ -47,7 +49,7 @@ app.get('/', (req, res) => {
   return res.render('home', {currentUser});
 
 });
-  
+
 //search
 app.post('/search', async(req, res) => {
   try {
@@ -73,6 +75,8 @@ app.post('/search', async(req, res) => {
       }
     }
 
+
+
     request.get(options, function(error, response, body) {
 
       //gets tracks
@@ -90,17 +94,40 @@ app.post('/search', async(req, res) => {
         }
       }
 
+
       return res.render('search-results', {search, tracks, currentUser})
       
     });
     
   });
 
-} catch (err) {
+  request.post(authOptions, function(error, response, body){
+
+    if (!error && response.statusCode === 200){
+      var token = body.access_token;
+      var user_id = '313oodjlqlgtvp6joqiomhfumlyq'
+      var options = {
+      url: `https://api.spotify.com/v1/users/{user_id}/playlists`,
+      body: {
+        "name": "New Playlist",
+        "description": "New playlist description",
+        "public": false
+      },
+      json: true
+      }
+    } else {
+      res.redirect('/#' +
+        querystring.stringify({
+          error: 'invalid_token'
+        }))};
+
+
+  })
+}catch (err) {
   console.log(err.message);
 }
 
-});
+  });
 
 
 
