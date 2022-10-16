@@ -1,3 +1,4 @@
+
 require('dotenv').config({path: '.env'});
 
 const express = require("express")
@@ -89,7 +90,7 @@ app.post('/search', async(req, res) => {
 
         for (n in playlists) {
           tracks[i].playlist.push(playlists[n]);
-          console.log(tracks[i].playlist)
+          // console.log(tracks[i].playlist)
 
         }
       }
@@ -101,28 +102,7 @@ app.post('/search', async(req, res) => {
     
   });
 
-  request.post(authOptions, function(error, response, body){
 
-    if (!error && response.statusCode === 200){
-      var token = body.access_token;
-      var user_id = '313oodjlqlgtvp6joqiomhfumlyq'
-      var options = {
-      url: `https://api.spotify.com/v1/users/{user_id}/playlists`,
-      body: {
-        "name": "New Playlist",
-        "description": "New playlist description",
-        "public": false
-      },
-      json: true
-      }
-    } else {
-      res.redirect('/#' +
-        querystring.stringify({
-          error: 'invalid_token'
-        }))};
-
-
-  })
 }catch (err) {
   console.log(err.message);
 }

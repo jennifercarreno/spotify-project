@@ -4,6 +4,17 @@ var request = require('request'); // "Request" library
 const user = require('../models/user');
 var client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
 var client_secret = process.env.SECRET; // Your secret
+var access = process.env.ACCESS; // Your secret
+var refresh = process.env.REFRESH; 
+
+var express = require('express')
+var bodyParser = require('body-parser')
+const SpotifyWebApi = require('spotify-web-api-node');
+var code
+var redirect_uri = 'http://localhost:3001/callback';
+
+console.log('BEGINNING ACCESS TOKEN: ' + access)
+console.log('BEGINNING REFRESH TOKEN: '+ refresh)
 
 //spotiify api auth
 var authOptions = {
@@ -115,6 +126,8 @@ module.exports = (app) => {
             for (i in tracks) {
               // adds playlist attribute to tracks
               tracks[i].playlist = playlist._id;
+              console.log("PLAYLIST TRACKS: " + tracks[i].id)
+
             
             }  
 
@@ -292,46 +305,139 @@ app.get('/playlist/:id/publish', async (req, res) => {
       const currentUser = req.user;
       
       const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
-      console.log("SELECTED PLAYLIST: " + playlist.title)
+      const tracks = playlist.tracks
       
       // checks to see if current user created the playlist
       if(currentUser.username == playlist.created_by.username){
 
-        request.post(authOptions, function(error, response, body) {
+        //GETTING REFRESH TOKEN 
+        var refreshAuth = {
+          url: 'https://accounts.spotify.com/api/token',
+          headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+          form: {
+            grant_type: 'refresh_token',
+            refresh_token: refresh
+          },
+          json: true
+        };
+
+        request.post(refreshAuth, function(error, response, body) {
           if (!error && response.statusCode === 200) {
+            var access_token = body.access_token;
+            res.send({
+              'access_token': access_token
+            });
+          }
+        });
+
+      
+
+        //PUBLISHING PLAYLIST POST
+
+        request.post(authOptions, function(error, response, body) {
+            if (!error && response.statusCode === 200) {
+      
+              // var access_token = body.access_token,
+              //     refresh_token = body.refresh_token;
+              
+              
+              var options = {
+                url: 'https://api.spotify.com/v1/users/313oodjlqlgtvp6joqiomhfumlyq/playlists',
+                
+                headers: {
+                  'Authorization': 'Bearer ' + access,
+                  'Content-Type': 'application/json'
+                },
+  
+                body: JSON.stringify({
+                    'name': playlist.title,
+                    'description': 'This CD was burned on burnify. ' + playlist.description,
+                    'public': true
+                }),
+                dataType:'json',
+                
+                
+              }
+
+              request.post(options, function(error, response, body) {
+                console.log('BODY: ' + body);
+                console.log('JSON BODY: ' + JSON.stringify(body.id));
+  
+                spotify_playlist = body.id
+              });
+                  
+            }});
+
+        
+
+        // request.post(authOptions, function(error, response, body) {
+
+
+          
         
             // use the access token to access the Spotify Web API
-            var token = 'BQCquyBOfiAXlS-npLkrAi3Gs8yEYGqubkKGK-joZzEVu2s89s5s7Y3tw71z4LdK14AnhTDENQgEh4fJwzYbSkvvJDrzhWSDsAZBDNitZQZtNYJOQ5LbLymplWQHLtEpGv6b-8yy4oXahwo88vR6tD67zCOzC9gIePXreFGp4_RCblzsrnUduTGhOaR26BJTrlgpz2Q7nVPlekLHTUmub2DWWJLZobVT0pELBCMSHEaXe6ANF1kHkp1n5YPVAK9y';
-            var options = {
-              url: 'https://api.spotify.com/v1/users/313oodjlqlgtvp6joqiomhfumlyq/playlists',
-              
-              headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-              },
+            // var authOptions = {
+            //   url: 'https://accounts.spotify.com/api/token',
+            //   form: {
+            //     code: code,
+            //     redirect_uri: redirect_uri,
+            //     grant_type: 'authorization_code'
+            //   },
+            //   headers: {
+            //     'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
+            //   },
+            //   json: true
+            // };
 
-              body: JSON.stringify({
-                  'name': playlist.title,
-                  'description': 'This CD was burned on burnify. ' + playlist.description,
-                  'public': true
-              }),
-              dataType:'json',
-              
-              
-            };
+            
 
-            request.post(options, function(error, response, body) {
-              console.log(body);
-            });
-          }});
+            
+                
+            
+
+           
+
+            
+
+            // for (i in tracks) {
+            //   console.log('TRACK[I].ID: '+ tracks[i].id)
+            //   const track = "spotify:track:"+tracks[i].id
+            //   console.log('TRACK: ' + track)
+            //   console.log('PLAYLIST ID: ' + spotify_playlist)
+  
+            //   var addTracks = {
+            //     url: 'https://api.spotify.com/v1/playlists/{playlist_id}/tracks',
+    
+            //     headers: {
+            //       'Authorization': 'Bearer ' + token,
+            //       'Content-Type': 'application/json'
+            //     },
+    
+            //     body: JSON.stringify({
+            //       'uris': track,
+                  
+            //   }),
+            //   dataType:'json',
+    
+            //   }
+
+            //   request.post(addTracks, function(error, response, body) {
+            //     console.log(body);
+            //   });
+            // }
+
+          
+          
+
+          
 
 
-        playlist.published = true;
+        // playlist.published = true;
         console.log("PUBLISHED: " + playlist.published)
-        Playlist.findOneAndUpdate({_id : playlist._id}, {published: true}).then((result) => {
-        res.redirect(`/playlist/${playlist._id}`)}).catch ((err) => {
-          console.log(err.message);
-      });
+        // Playlist.findOneAndUpdate({_id : playlist._id}, {published: true}).then((result) => {
+      //   res.redirect(`/playlist/${playlist._id}`)}).catch ((err) => {
+      //     console.log(err.message);
+      // });
 
       } else {
         return res.render('playlist-show', {playlist, currentUser, search})

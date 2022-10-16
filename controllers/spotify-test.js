@@ -1,58 +1,70 @@
-var client_id = '4889e43cc0dd4792938fe5cee78fd00d';
-const client_secret = process.env.SPOTIFY_SECRET; // Your secret
-var redirect_uri = 'http://localhost:3001/callback';
-var request = require('request'); // "Request" library
+const SpotifyWebApi = require('spotify-web-api-node');
+const express = require("express");
 
 
-// your application requests authorization
-var authOptions = {
-  url: 'https://accounts.spotify.com/api/token',
-  headers: {
-    'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-  },
-  form: {
-    grant_type: 'client_credentials'
-  },
-  json: true
-};
+
+const app = express();
 
 module.exports = (app) => {
 
-    //very basic very bad but working way of publishing a playlist 
-
-    app.get('/spotifytest', (req, res) => {
-
-        request.post(authOptions, function(error, response, body) {
-            if (!error && response.statusCode === 200) {
-          
-              // use the access token to access the Spotify Web API
-              var token = 'BQCquyBOfiAXlS-npLkrAi3Gs8yEYGqubkKGK-joZzEVu2s89s5s7Y3tw71z4LdK14AnhTDENQgEh4fJwzYbSkvvJDrzhWSDsAZBDNitZQZtNYJOQ5LbLymplWQHLtEpGv6b-8yy4oXahwo88vR6tD67zCOzC9gIePXreFGp4_RCblzsrnUduTGhOaR26BJTrlgpz2Q7nVPlekLHTUmub2DWWJLZobVT0pELBCMSHEaXe6ANF1kHkp1n5YPVAK9y';
-              var options = {
-                url: 'https://api.spotify.com/v1/users/313oodjlqlgtvp6joqiomhfumlyq/playlists',
-                
-                headers: {
-                  'Authorization': 'Bearer ' + token,
-                  'Content-Type': 'application/json'
-                },
-
-                body: JSON.stringify({
-                    'name': 'Test Playlist',
-                    'public': true
-                }),
-                dataType:'json',
-                
-                
-              };
-
-              request.post(options, function(error, response, body) {
-                console.log(body);
-              });
-            }
-          });
-          
+    const spotifyApi = new SpotifyWebApi({
+        redirectUri: 'http://localhost:3001/callback',
+        clientId:'4889e43cc0dd4792938fe5cee78fd00d',
+        clientSecret: process.env.SPOTIFY_SECRET, // Your secret
         
+    });
+    const scopes = [
+  
+        'playlist-modify-public',
+        'playlist-modify-private',
+        
+      ];
+      
+app.get('/spotify_login', (req, res) => {
+  res.redirect(spotifyApi.createAuthorizeURL(scopes));
+});
+
+app.get('/callback', (req, res) => {
+  const error = req.query.error;
+  const code = req.query.code;
+  const state = req.query.state;
+
+  if (error) {
+    console.error('Callback Error:', error);
+    res.send(`Callback Error: ${error}`);
+    return;
+  }
+
+  spotifyApi
+    .authorizationCodeGrant(code)
+    .then(data => {
+      const access_token = data.body['access_token'];
+      const refresh_token = data.body['refresh_token'];
+      const expires_in = data.body['expires_in'];
+
+      spotifyApi.setAccessToken(access_token);
+      spotifyApi.setRefreshToken(refresh_token);
+
+      console.log('access_token:', access_token);
+      console.log('refresh_token:', refresh_token);
+
+      console.log(
+        `Sucessfully retreived access token. Expires in ${expires_in} s.`
+      );
+      res.send('Success! You can now close the window.');
+
+      setInterval(async () => {
+        const data = await spotifyApi.refreshAccessToken();
+        const access_token = data.body['access_token'];
+
+        console.log('The access token has been refreshed!');
+        console.log('access_token:', access_token);
+        spotifyApi.setAccessToken(access_token);
+      }, expires_in / 2 * 1000);
     })
-    
-
+    .catch(error => {
+      console.error('Error getting Tokens:', error);
+      res.send(`Error getting Tokens: ${error}`);
+    });
+});
 }
-
