@@ -14,9 +14,13 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     {{#if currentUser}}
+        <img src="http://pixelartmaker-data-78746291193.nyc3.digitaloceanspaces.com/image/3dfc9e0b9b0a10e.png" style="width: 50px">
+
         <a class="navbar-brand" href="/home">Burnify</a>
 
         {{else}}
+          <img src="http://pixelartmaker-data-78746291193.nyc3.digitaloceanspaces.com/image/3dfc9e0b9b0a10e.png" style="width: 50px">
+
           <a class="navbar-brand" href="/">Burnify</a>
     {{/if}}
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,6 +30,7 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           {{#if currentUser}}
+          
           <a class="nav-link" href="/home">Home</a>
 
             {{else}}

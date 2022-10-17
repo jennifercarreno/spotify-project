@@ -1,14 +1,14 @@
 
-  <div class="d-flex align-content-center flex-wrap jumbotron text-center" style="background-image: url('https://i.pinimg.com/736x/f3/9b/79/f39b793b352a9410aa9516cbdb66f773.jpg'); background-size:cover;">
-    <div class="container text-center my-3">
+  <div class="d-flex align-content-center flex-wrap jumbotron text-center" style="background-image: url('https://i.pinimg.com/736x/f3/9b/79/f39b793b352a9410aa9516cbdb66f773.jpg'); background-size:100%;">
+    <div class="container text-center my-3" style="height: 100vh;">
 
         <img src="/static/burnify_logo.png"  class="card-img-top" style="width: 900px; margin-top: 100px;"><br>
-        <small>Jennifer's Experiment with the Spotify API</small>
         <ul class="">
             {{#unless currentUser}}
-            <a href="/sign-up">Sign Up</a>
+            <a href="/sign-up" class="btn btn-outline-primary btn-lg">Sign Up</a>
             {{/unless}}
         </ul>
+
 
     </div>
 
@@ -18,7 +18,7 @@
 
 
 <!-- FOOTER -->
-    <div class="bg-dark p-5 text-white">
+    {{!-- <div class="bg-dark p-5 text-white">
         <div>
 
             <div class="text-center">
@@ -53,10 +53,5 @@
             </div>
         </div>
         &copy; 2021 Pleasing
-    </div>
+    </div> --}}
 
-{{!-- <div class="card-img-overlay">
-    <img src="/static/burnify_logo.png" style="width: 1000px;" class="mx-auto"><br>
-    <small>Jennifer's Experiment with the Spotify API</small>
-
-  </div> --}}
