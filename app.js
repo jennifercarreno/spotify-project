@@ -59,6 +59,13 @@ var authOptions = {
 app.get('/', (req, res) => {
   const currentUser = req.user;
   
+  return res.render('launch', {currentUser});
+
+});
+
+app.get('/home', (req, res) => {
+  const currentUser = req.user;
+  
   return res.render('home', {currentUser});
 
 });

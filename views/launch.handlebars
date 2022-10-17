@@ -6,14 +6,14 @@
 
 <div class="d-flex align-content-center flex-wrap jumbotron text-center">
 <div class="container text-center my-3">
-    <form action="/search" method="POST">
-
-        <input type="text" placeholder="Search for a song..." id="search" name="search" class="col-lg-9 form-control-lg">
-        <button type="submit" class="btn-outline-primary form-control-lg">Search</button>
-
-    </form>
 
     <img src="https://pudding.cool/2021/10/judge-my-music/assets/images/shelf-9.png" style="width: 1500px;">
+
+    <ul class="">
+        {{#unless currentUser}}
+          <li><a href="/sign-up">Sign Up</a></li>
+        {{/unless}}
+    </ul>
 
 </div>
 
