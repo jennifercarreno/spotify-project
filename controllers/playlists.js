@@ -130,7 +130,7 @@ module.exports = (app) => {
             for (i in tracks) {
               // adds playlist attribute to tracks
               tracks[i].playlist = playlist._id;
-              console.log("PLAYLIST TRACKS: " + tracks[i].id)
+              // console.log("PLAYLIST ALBUM: " + tracks[i].album.images[2].width)
 
             
             }  
