@@ -6,9 +6,15 @@
             <img src={{this.url}} class="col-lg-3">
         {{/with}}
         <div class="col-lg-9 py-3">
-            <h1>{{playlist.title}}</h1>
+            {{#if playlist.published}}
+            <small><strong>BURNED CD</strong></small>
+            {{else}}
+            <small><strong>UNPUBLISHED CD</strong></small>
+
+            {{/if}}
+            <h1 class="mt-4"><strong>{{playlist.title}}</strong></h1>
             <p>{{playlist.description}}</p>
-            <p>By: {{playlist.created_by.username}}</p>
+            <p>Created By: {{playlist.created_by.username}}</p>
         </div>
         
     </div>
@@ -37,7 +43,57 @@
     
 
 {{/if}}
+{{#if search}} 
+<h2>Showing results for: {{search}}</h2>
 
+
+<ol>
+            {{#each tracks}}
+
+           <li>
+                <div class="row">
+
+                {{!-- DISPLAYS ALBUM COVER --}}
+
+               <div class="col-sm-1">
+                {{#with this.album.images.[2]}}
+                <img src={{this.url}}>
+                {{/with}}
+               </div>
+
+               <div class="col-lg-9">
+                {{!-- DISPLAYS TRACK NAME --}}
+                   <h3>{{this.name}}</h3>
+
+                {{!-- DISPLAYS ARTIST --}}
+                   {{#each this.album.artists}}
+                    <p>{{this.name}}</p>
+                    {{/each}}
+               </div>
+               
+
+                <div class="col-lg-2">
+                    <form action="/playlist/add" method="POST">
+                    <input type="hidden" name="track_id" value="{{ this.id }}">
+                    <input type="hidden" name="playlist_id" value="{{ this.playlist }}">
+
+                    <input type="submit" value="Add to playlist" class="btn btn-outline-primary">
+                    </form>
+                    
+                </div>
+
+               
+
+                </div>
+
+           </li>
+
+            {{/each}}
+
+        </ol>
+
+{{/if}}
+<hr class="solid">
 <ol>
     {{#each playlist.tracks}}
         <li>
@@ -92,56 +148,7 @@
 
 {{/if}}
 
-{{#if search}} 
-<h2>Showing results for: {{search}}</h2>
 
-
-<ol>
-            {{#each tracks}}
-
-           <li>
-                <div class="row">
-
-                {{!-- DISPLAYS ALBUM COVER --}}
-
-               <div class="col-sm-1">
-                {{#with this.album.images.[2]}}
-                <img src={{this.url}}>
-                {{/with}}
-               </div>
-
-               <div class="col-lg-9">
-                {{!-- DISPLAYS TRACK NAME --}}
-                   <h3>{{this.name}}</h3>
-
-                {{!-- DISPLAYS ARTIST --}}
-                   {{#each this.album.artists}}
-                    <p>{{this.name}}</p>
-                    {{/each}}
-               </div>
-               
-
-                <div class="col-lg-2">
-                    <form action="/playlist/add" method="POST">
-                    <input type="hidden" name="track_id" value="{{ this.id }}">
-                    <input type="hidden" name="playlist_id" value="{{ this.playlist }}">
-
-                    <input type="submit" value="Add to playlist" class="btn btn-outline-primary">
-                    </form>
-                    
-                </div>
-
-               
-
-                </div>
-
-           </li>
-
-            {{/each}}
-
-        </ol>
-
-{{/if}}
 
 
 	
