@@ -531,15 +531,32 @@ app.get('/playlist/:id/publish', async (req, res) => {
           }
           
         });
+
+        playlist.published = true;
+        console.log("PUBLISHED: " + playlist.published)
+        Playlist.findOneAndUpdate({_id : playlist._id}, {published: true}).then((result) => {
+        res.redirect(`/playlist/${playlist._id}`)}).catch ((err) => {
+          console.log(err.message);
+      });
+
+      } else {
+        return res.render('playlist-show', {playlist, currentUser, search})
+      }
+
+    } else {
+      const currentUser = req.user;
+      const search = req.body.search;
+      const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
+      return res.render('playlist-show', {playlist, currentUser, search})
+    }
         
        
             
             
             
 
-      }
+      
 
-    }
 
   } catch (err){
     console.log(err.message);
