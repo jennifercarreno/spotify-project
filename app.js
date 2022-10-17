@@ -3,8 +3,9 @@ require('dotenv').config({path: '.env'});
 
 const express = require("express")
 const {engine} = require('express-handlebars')
-const app = express();
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+
 const checkAuth = require('./middleware/checkAuth');
 const Playlist = require('./models/playlist');
 const request = require('request'); // "Request" library
@@ -12,15 +13,26 @@ const client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
 const client_secret = process.env.SECRET; // Your secret
 const User = require('./models/user');
 
+const app = express();
+
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.text());
+app.use('/controllers/playlists', bodyParser.json())
+app.use('/controllers/playlists', express.json())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser());
 app.use(checkAuth);
+
+
+
 
 require('./controllers/playlists')(app);
 require('./controllers/auth.js')(app);
