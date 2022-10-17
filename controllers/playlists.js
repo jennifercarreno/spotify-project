@@ -302,179 +302,24 @@ module.exports = (app) => {
             }
 });
 
-//publish a playlist
-// app.get('/playlist/:id/publish', async (req, res) => {
-//   try {
-//     if (req.user) {
-//       const currentUser = req.user;
-      
-//       const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
-//       const tracks = playlist.tracks
-      
-//       // checks to see if current user created the playlist
-//       if(currentUser.username == playlist.created_by.username){
-
-//         //GETTING REFRESH TOKEN 
-//         var refreshAuth = {
-//           url: 'https://accounts.spotify.com/api/token',
-//           headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-//           form: {
-//             grant_type: 'refresh_token',
-//             refresh_token: refresh
-//           },
-//           json: true
-//         };
-
-//         request.post(refreshAuth, function(error, response, body) {
-//           if (!error && response.statusCode === 200) {
-//             var access_token = body.access_token;
-//             res.send({
-//               'access_token': access_token
-//             });
-//           }
-//         });
-
-      
-
-//         //PUBLISHING PLAYLIST POST
-
-//         request.post(authOptions, function(error, response, body) {
-//             if (!error && response.statusCode === 200) {
-      
-//               // var access_token = body.access_token,
-//               //     refresh_token = body.refresh_token;
-              
-              
-//               var options = {
-//                 url: 'https://api.spotify.com/v1/users/313oodjlqlgtvp6joqiomhfumlyq/playlists',
-                
-//                 headers: {
-//                   'Authorization': 'Bearer ' + access,
-//                 },
-  
-//                 body: JSON.stringify({
-//                     'name': playlist.title,
-//                     'description': 'This CD was burned on burnify. ' + playlist.description,
-//                     'public': true
-//                 }),
-                
-                
-//               }
-
-//               request.post(options, function(error, response, body) {
-//                 console.log('BODY: ' + response.json());
-//                 // console.log('BODY ATTRIBUTE: ' + JSON.stringify(body.id));
-//                 console.log(body.uri)
-  
-                
-//               });
-                  
-//             }});
-
-//             // ACCESS = 'BQC3rOQJhF4JE3ra3FJLSKQfdoE2wZFmce8LJ-RIUDqjFqZfznNa6yVgJs8tjAUAOt5ge0X3stzXbHMpPZo-VN_6ydv023IPZSAqajQ_ugPiIEwEHByH5l2NZ9f-IcBU2k1jbJd7ZgI0EF6gGPpWhzg3sBk8Srfg3LSIvEooJpRQyCi96P7n5qIXDAs0Y5sCRsY44HIWsJjs75Z4Ge7tcgAXa__FO8G4u3P3oK4cbxnQH_3wZ6A'
-
-
-//         // request.post(authOptions, function(error, response, body) {
-
-
-          
-        
-//             // use the access token to access the Spotify Web API
-//             // var authOptions = {
-//             //   url: 'https://accounts.spotify.com/api/token',
-//             //   form: {
-//             //     code: code,
-//             //     redirect_uri: redirect_uri,
-//             //     grant_type: 'authorization_code'
-//             //   },
-//             //   headers: {
-//             //     'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
-//             //   },
-//             //   json: true
-//             // };
-
-            
-
-            
-                
-            
-
-           
-
-            
-
-//             // for (i in tracks) {
-//             //   console.log('TRACK[I].ID: '+ tracks[i].id)
-//             //   const track = "spotify:track:"+tracks[i].id
-//             //   console.log('TRACK: ' + track)
-//             //   console.log('PLAYLIST ID: ' + spotify_playlist)
-  
-//             //   var addTracks = {
-//             //     url: 'https://api.spotify.com/v1/playlists/{playlist_id}/tracks',
-    
-//             //     headers: {
-//             //       'Authorization': 'Bearer ' + token,
-//             //       'Content-Type': 'application/json'
-//             //     },
-    
-//             //     body: JSON.stringify({
-//             //       'uris': track,
-                  
-//             //   }),
-//             //   dataType:'json',
-    
-//             //   }
-
-//             //   request.post(addTracks, function(error, response, body) {
-//             //     console.log(body);
-//             //   });
-//             // }
-
-          
-          
-
-          
-
-
-//         // playlist.published = true;
-//         console.log("PUBLISHED: " + playlist.published)
-//         // Playlist.findOneAndUpdate({_id : playlist._id}, {published: true}).then((result) => {
-//       //   res.redirect(`/playlist/${playlist._id}`)}).catch ((err) => {
-//       //     console.log(err.message);
-//       // });
-
-//       } else {
-//         return res.render('playlist-show', {playlist, currentUser, search})
-//       }
-
-//     } else {
-//       const currentUser = req.user;
-//       const search = req.body.search;
-//       const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
-//       return res.render('playlist-show', {playlist, currentUser, search})
-//     }
-      
-//   } catch(err){
-//       console.log(err.message);
-//   }
-
-// });
-
+// publish a playlist to spotify and burnify
 app.get('/playlist/:id/publish', async (req, res) => {
 
   try{
     if (req.user) {
       const currentUser = req.user;
-      
       const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
       const tracks = playlist.tracks
       var playlist_id 
       
-//       // checks to see if current user created the playlist
+//   checks to see if current user created the playlist
       if(currentUser.username == playlist.created_by.username){
 
+        // publishes to spotify
         request.post(authOptions, function(error, response, body) {
           if (!error && response.statusCode === 200) {
+
+            //creating the playlist on spotify
             var options = {
               url: 'https://api.spotify.com/v1/users/313oodjlqlgtvp6joqiomhfumlyq/playlists',
               
@@ -497,6 +342,7 @@ app.get('/playlist/:id/publish', async (req, res) => {
               playlist_id = parsedBody.id
               console.log(parsedBody.uri)
 
+              // adds track to playlist
               for (i in tracks){
                 const track = "spotify:track:"+tracks[i].id
                 console.log('TRACK ID: ' + track)
@@ -523,15 +369,13 @@ app.get('/playlist/:id/publish', async (req, res) => {
                 
               }
 
-             
-
-              
             });
             
           }
           
         });
 
+        // publishes to burnify
         playlist.published = true;
         console.log("PUBLISHED: " + playlist.published)
         Playlist.findOneAndUpdate({_id : playlist._id}, {published: true}).then((result) => {
@@ -550,14 +394,6 @@ app.get('/playlist/:id/publish', async (req, res) => {
       return res.render('playlist-show', {playlist, currentUser, search})
     }
         
-       
-            
-            
-            
-
-      
-
-
   } catch (err){
     console.log(err.message);
   }
