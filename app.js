@@ -12,7 +12,7 @@ const request = require('request'); // "Request" library
 const client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
 const client_secret = process.env.SECRET; // Your secret
 const User = require('./models/user');
-
+const path = require('path')
 const app = express();
 
 app.engine('handlebars', engine());
@@ -31,13 +31,13 @@ app.use(express.static('public'));
 app.use(cookieParser());
 app.use(checkAuth);
 
+app.use("/static", express.static(path.join(__dirname, "/static")));
 
 
 
 require('./controllers/playlists')(app);
 require('./controllers/auth.js')(app);
 require('./controllers/spotify-account.js')(app);
-require('./controllers/spotify-test.js')(app);
 
 
 require('./data/app-db');

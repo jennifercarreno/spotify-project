@@ -1,23 +1,21 @@
-<div class="text-center">
-<h1>Burnify</h1>
-<small>Jennifer's Experiment with the Spotify API</small>
+
+  <div class="d-flex align-content-center flex-wrap jumbotron text-center" style="background-image: url('https://i.pinimg.com/736x/f3/9b/79/f39b793b352a9410aa9516cbdb66f773.jpg'); background-size:cover;">
+    <div class="container text-center my-3">
+
+        <img src="/static/burnify_logo.png"  class="card-img-top" style="width: 900px; margin-top: 100px;"><br>
+        <small>Jennifer's Experiment with the Spotify API</small>
+        <ul class="">
+            {{#unless currentUser}}
+            <a href="/sign-up">Sign Up</a>
+            {{/unless}}
+        </ul>
+
+    </div>
 
 </div>
 
-<div class="d-flex align-content-center flex-wrap jumbotron text-center">
-<div class="container text-center my-3">
 
-    <img src="https://pudding.cool/2021/10/judge-my-music/assets/images/shelf-9.png" style="width: 1500px;">
 
-    <ul class="">
-        {{#unless currentUser}}
-          <li><a href="/sign-up">Sign Up</a></li>
-        {{/unless}}
-    </ul>
-
-</div>
-
-</div>
 
 <!-- FOOTER -->
     <div class="bg-dark p-5 text-white">
@@ -56,3 +54,9 @@
         </div>
         &copy; 2021 Pleasing
     </div>
+
+{{!-- <div class="card-img-overlay">
+    <img src="/static/burnify_logo.png" style="width: 1000px;" class="mx-auto"><br>
+    <small>Jennifer's Experiment with the Spotify API</small>
+
+  </div> --}}
