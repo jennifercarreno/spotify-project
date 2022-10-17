@@ -468,6 +468,7 @@ app.get('/playlist/:id/publish', async (req, res) => {
       
       const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
       const tracks = playlist.tracks
+      var playlist_id 
       
 //       // checks to see if current user created the playlist
       if(currentUser.username == playlist.created_by.username){
@@ -491,17 +492,47 @@ app.get('/playlist/:id/publish', async (req, res) => {
             }
 
             request.post(options, function(error, response, body) {
-              // console.log('BODY: ' + body);
-              // console.log('BODY ATTRIBUTE: ' + JSON.stringify(body.uri));
-              // console.log(body.uri)
+              
               var parsedBody = JSON.parse(body)
+              playlist_id = parsedBody.id
               console.log(parsedBody.uri)
+
+              for (i in tracks){
+                const track = "spotify:track:"+tracks[i].id
+                console.log('TRACK ID: ' + track)
+                console.log('PLAYLIST_ID: '+ playlist_id)
+
+                var addTracks = {
+                  url: `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
+      
+                  headers: {
+                    'Authorization': 'Bearer ' + access,
+                  },
+      
+                  body: JSON.stringify({
+                    'uris': [track]
+                    
+                }),
+      
+                }
+
+                request.post(addTracks, function(error, response, body) {
+                  console.log(body);
+                });
+                  
+                
+              }
+
+             
 
               
             });
+            
           }
-
+          
         });
+        
+       
             
             
             
@@ -510,7 +541,7 @@ app.get('/playlist/:id/publish', async (req, res) => {
 
     }
 
-  }catch (err){
+  } catch (err){
     console.log(err.message);
   }
 
