@@ -311,6 +311,7 @@ app.get('/playlist/:id/publish', async (req, res) => {
       const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
       const tracks = playlist.tracks
       var playlist_id 
+      var link
       
 //   checks to see if current user created the playlist
       if(currentUser.username == playlist.created_by.username){
@@ -340,13 +341,18 @@ app.get('/playlist/:id/publish', async (req, res) => {
               
               var parsedBody = JSON.parse(body)
               playlist_id = parsedBody.id
-              console.log(parsedBody.uri)
+              link = parsedBody.external_urls["spotify"]
+              Playlist.findOneAndUpdate({_id : playlist._id}, {playlist_url: link}).then((result)=>{
+              });
+
+        
+              // console.log('URL: '+ parsedBody.external_urls["spotify"])
 
               // adds track to playlist
               for (i in tracks){
                 const track = "spotify:track:"+tracks[i].id
-                console.log('TRACK ID: ' + track)
-                console.log('PLAYLIST_ID: '+ playlist_id)
+                // console.log('TRACK ID: ' + track)
+                // console.log('PLAYLIST_ID: '+ playlist_id)
 
                 var addTracks = {
                   url: `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
@@ -369,6 +375,19 @@ app.get('/playlist/:id/publish', async (req, res) => {
                 
               }
 
+              playlist.playlist_url = link;
+              console.log("PLAYLIST URL: "+ playlist.playlist_url)
+
+              playlist.published = true;
+
+              console.log("PUBLISHED: " + playlist.published)
+              console.log('LINK: '+ link)
+              Playlist.findOneAndUpdate({_id : playlist._id}, {published: true, playlist_url: link}).then((result) => {
+              res.redirect(`/playlist/${playlist._id}`)}).catch ((err) => {
+                console.log(err.message);
+            });
+
+
             });
             
           }
@@ -376,12 +395,6 @@ app.get('/playlist/:id/publish', async (req, res) => {
         });
 
         // publishes to burnify
-        playlist.published = true;
-        console.log("PUBLISHED: " + playlist.published)
-        Playlist.findOneAndUpdate({_id : playlist._id}, {published: true}).then((result) => {
-        res.redirect(`/playlist/${playlist._id}`)}).catch ((err) => {
-          console.log(err.message);
-      });
 
       } else {
         return res.render('playlist-show', {playlist, currentUser, search})

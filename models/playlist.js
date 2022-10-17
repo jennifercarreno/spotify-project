@@ -6,6 +6,7 @@ const playlistSchema = new Schema({
     tracks: {type: Array},
     published: {type: Boolean},
     created_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    playlist_url: {type: String, required: false}
 
 });
 
