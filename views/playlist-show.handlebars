@@ -15,7 +15,10 @@
             <h1 class="mt-4"><strong>{{playlist.title}}</strong></h1>
             <p>{{playlist.description}}</p>
             <p>Created By: {{playlist.created_by.username}}</p>
-            <a href={{playlist.playlist_url}}>link here</a>
+            {{#if playlist.playlist_url}}
+                <a href={{playlist.playlist_url}}>Open on Spotify</a>
+
+            {{/if}}
         </div>
         
     </div>
@@ -27,14 +30,14 @@
     <form action="/playlist/search/{{playlist._id}}" method="POST" class="my-3 d-flex">
         
         <input type="text" placeholder="search" id="search" name="search" class="form-control">
-        <button type="submit" class="btn btn-outline-primary">Search</button>
+        <button type="submit" class="btn btn-outline-primary  mx-2">Search</button>
 
-        <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">•••</button>
     <span class="sr-only"></span>
     </button>
     <div class="dropdown-menu">
-        <a href="/playlist/delete/{{playlist._id}}" onclick="return confirm('Are you sure you want to delete this playlist?')" class="dropdown-item">Delete Playlist</a>
-        <a href="/playlist/{{playlist._id}}/publish" onclick="return confirm('Are you sure you want to publish this playlist?')" class="dropdown-item">Publish Playlist</a>
+        <a href="/playlist/delete/{{playlist._id}}" onclick="return confirm('Are you sure you want to delete this CD?')" class="dropdown-item">Delete CD</a>
+        <a href="/playlist/{{playlist._id}}/publish" onclick="return confirm('Are you sure you want to burn this CD?')" class="dropdown-item">Burn CD</a>
     </div>
 
     </form>
@@ -78,7 +81,7 @@
                     <input type="hidden" name="track_id" value="{{ this.id }}">
                     <input type="hidden" name="playlist_id" value="{{ this.playlist }}">
 
-                    <input type="submit" value="Add to playlist" class="btn btn-outline-primary">
+                    <input type="submit" value="Add Track to CD" class="btn btn-outline-primary">
                     </form>
                     
                 </div>
@@ -95,6 +98,7 @@
 
 {{/if}}
 <hr class="solid">
+
 <ol>
     {{#each playlist.tracks}}
         <li>

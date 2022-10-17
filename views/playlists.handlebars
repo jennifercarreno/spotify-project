@@ -2,13 +2,13 @@
 
 {{#if library}}
 <h1>Your Library</h1>
-<strong ><a href="/playlist/new">New Playlist</a> </strong>
+<strong ><a href="/playlist/new">New CD</a> </strong>
 
 {{else}}
-<h1>All Public Playlists</h1>
+<h1 class="text-center mt-3"><strong> All Burned CDs</strong> </h1>
 {{/if}}
 
-    <div class="row">
+    <div class="row" style="padding-left: 75px;">
     {{#each displayed_playlists}}
    
     <div class="card col-lg-2 py-3 bg-light m-2" >
@@ -17,8 +17,8 @@
             <img class=""src={{this.url}}>
         {{/with}}
         <div class="card-body">
-        <h3 class="pt-4"><a href='/playlist/{{this._id}}'>{{this.title}}</a></h3>
-        <small>By: {{this.created_by.username}}</small><br>       
+        <h3 class="pt-4"><a href='/playlist/{{this._id}}' class="text-dark" style="text-decoration: none;"><strong>{{this.title}}</strong></a></h3>
+        <small>By {{this.created_by.username}}</small><br>       
         </div>
 
         </div>
