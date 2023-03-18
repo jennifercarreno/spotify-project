@@ -125,12 +125,11 @@ module.exports = (app) => {
             const search = req.body.search;
             const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
             const tracks = playlist.tracks
-            console.log("PLAYLIST PUBLISHED: " + playlist.published)
+            // console.log("PLAYLIST PUBLISHED: " + playlist.published)
 
             for (i in tracks) {
               // adds playlist attribute to tracks
               tracks[i].playlist = playlist._id;
-              // console.log("PLAYLIST ALBUM: " + tracks[i].album.images[2].width)
 
             
             }  
@@ -330,7 +329,7 @@ app.get('/playlist/:id/publish', async (req, res) => {
 
               body: JSON.stringify({
                   'name': playlist.title,
-                  'description': 'This CD was burned on burnify. ' + playlist.description,
+                  'description': `This CD was burned on Burnify by ${playlist.created_by.username}. ${playlist.description}`,
                   'public': true
               }),
               
