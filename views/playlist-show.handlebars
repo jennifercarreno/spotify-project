@@ -2,8 +2,8 @@
 <div class="container">
     
     <div class="row container pt-3 pb-5">
-        {{#with playlist.tracks.[0].album.images.[2]}}
-            <img src={{this.url}} class="col-lg-3">
+        {{#with playlist.tracks.[0].album.images.[1]}}
+            <img src={{this.url}} width="200px" class="col-lg-3">
         {{/with}}
         <div class="col-lg-9 py-3">
             {{#if playlist.published}}
@@ -60,8 +60,8 @@
                 {{!-- DISPLAYS ALBUM COVER --}}
 
                <div class="col-sm-1">
-                {{#with this.album.images.[2]}}
-                <img src={{this.url}}>
+                {{#with this.album.images.[0]}}
+                <img width="75px" src={{this.url}}>
                 {{/with}}
                </div>
 
@@ -107,8 +107,8 @@
                 {{!-- DISPLAYS ALBUM COVER --}}
 
                <div class="col-sm-1">
-                {{#with this.album.images.[0]}}
-                <img src={{this.url}} >
+                {{#with this.album.images.[2]}}
+                <img width="75px" src={{this.url}} >
                 {{/with}}
                </div>
 
