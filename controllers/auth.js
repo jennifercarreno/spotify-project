@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const cors = require("cors")
 
 
 module.exports = app => {
@@ -28,8 +29,9 @@ module.exports = app => {
     app.get('/login', (req, res) => res.render('login'));
 
     // LOGIN
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
+    console.log("login triggered");
     // Find this user name
     User.findOne({ username }, 'username password')
       .then((user) => {

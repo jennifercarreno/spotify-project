@@ -3,7 +3,7 @@ const client_secret = process.env.SPOTIFY_SECRET; // Your secret
 var redirect_uri = 'http://localhost:3001/callback';
 const querystring = require ('querystring');
 const request = require('request'); // "Request" library
-var access = process.env.ACCESS; // Your secret
+var access = process.env.ACCESS; // Your access
 var refresh = process.env.REFRESH; 
 
 // THIS AUTH PROCESS WORKS
@@ -25,6 +25,12 @@ app.get('/loginspotify', function(req, res) {
 
   var state = randomString(16);
   var scope = 'user-read-private user-read-email playlist-modify-public';
+  var url = 'https://accounts.spotify.com/authorize';
+    url += '?response_type=token';
+    url += '&client_id=' + encodeURIComponent(client_id);
+    url += '&scope=' + encodeURIComponent(scope);
+    url += '&redirect_uri=' + encodeURIComponent(redirect_uri);
+    url += '&state=' + encodeURIComponent(state);
 
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
@@ -68,10 +74,10 @@ app.get('/callback', function(req, res, next) {
           var access_token = body.access_token,
               refresh_token = body.refresh_token;
 
-          process.env.ACCESS = access_token;
-          console.log('AUTH TEST ACCESS ENV: '+ process.env.ACCESS)
-          process.env.REFRESH = refresh_token;
-          console.log('REFRESH TEST ACCESS ENV: '+ process.env.REFRESH)
+          // process.env.ACCESS = access_token;
+          // console.log('AUTH TEST ACCESS ENV: '+ process.env.ACCESS)
+          // process.env.REFRESH = refresh_token;
+          // console.log('REFRESH TEST ACCESS ENV: '+ process.env.REFRESH)
 
 
               
@@ -115,11 +121,7 @@ app.get('/callback', function(req, res, next) {
             }));
         }
       });
-      // request.post('users/313oodjlqlgtvp6joqiomhfumlyq/playlists', function(error, response, body) {
-      //   "name": "New Playlist",
-      //   "description": "New playlist description",
-      //   "public": false
-      // })
+
     };
 });
 

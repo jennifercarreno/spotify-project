@@ -1,6 +1,6 @@
 
 require('dotenv').config({path: '.env'});
-
+const cors = require('cors')
 const express = require("express")
 const {engine} = require('express-handlebars')
 const cookieParser = require('cookie-parser');
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser());
 app.use(checkAuth);
-
+app.use(cors())
 app.use("/static", express.static(path.join(__dirname, "/static")));
 
 
@@ -65,8 +65,8 @@ app.get('/', (req, res) => {
 
 app.get('/home', (req, res) => {
   const currentUser = req.user;
-  
-  return res.render('home', {currentUser});
+  console.log(currentUser);
+  return res.send({currentUser});
 
 });
 

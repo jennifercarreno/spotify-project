@@ -6,7 +6,6 @@ const user = require('../models/user');
 var client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
 var client_secret = process.env.SECRET; // Your secret
 var access = process.env.ACCESS; // Your secret
-var refresh = process.env.REFRESH; 
 var express = require('express')
 var bodyParser = require('body-parser')
 
@@ -341,6 +340,7 @@ app.get('/playlist/:id/publish', async (req, res) => {
               
               var parsedBody = JSON.parse(body)
               playlist_id = parsedBody.id
+              console.log("PARSED BODY RESPONSE: " + parsedBody);
               link = parsedBody.external_urls["spotify"]
               Playlist.findOneAndUpdate({_id : playlist._id}, {playlist_url: link}).then((result)=>{
               });
