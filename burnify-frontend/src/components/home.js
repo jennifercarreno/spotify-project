@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
-function HomePage({token}) {
-    // const [ home, setHome ] = useState("")
+const msToMinutesAndSeconds = (ms) => {
+    const minutes = Math.floor(ms / 60000);
+    const seconds = ((ms % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+  };
+
+function HomePage() {
     const [search, setSearch] = useState("");
     let [tracks, setTracks] = useState([]);
-
-	// useEffect(() => {
-	// 	axios.get("http://localhost:3001/home").then(function(response) {
-	// 		setHome(response.data)
-    //         console.log(response)
-	// 	})
-	// }, [])
     
     async function handleSubmit(e) {
 		e.preventDefault()
@@ -20,8 +18,7 @@ function HomePage({token}) {
 				search
 			})
             setTracks(res.data.tracks);
-            // setTracks = res.data.tracks.map(({name, id}) => {return {name, id}});
-            console.log("Tracks: " + tracks[0].name)
+            console.log(res.data.tracks[0])
 
 		} catch (error) {
 			console.error(error)
@@ -42,9 +39,36 @@ function HomePage({token}) {
 
             <ul>
             {
-                tracks.map(({name, id}) => {
-                    console.log({name})
-                    return (<li key={id}>{name}</li>)
+                tracks.map(({
+                    id,
+                    name,
+                    artists,
+                    duration_ms,
+                    album,
+
+                }, index) => {
+                    return (
+                        <div className="row" key={id}>
+                            <div className="col">
+                                <span>{index + 1}</span>
+                            </div>
+                            <div className="col detail">
+                                <div className="image">
+                                    <img src={album.images[0].url} alt="track" />
+                                </div>
+                                <div className="info">
+                                    <span className="name">{name}</span>
+                                    <span>{artists[0].name}</span>
+                                </div>
+                            </div>
+                            <div className="col">
+                                <span>{album.name}</span>
+                            </div>
+                            <div className="col">
+                                <span>{msToMinutesAndSeconds(duration_ms)}</span>
+                            </div>
+                        </div>
+                    )
                 })
             }
             </ul>
