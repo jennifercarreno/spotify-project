@@ -114,8 +114,9 @@ app.post('/search', async(req, res) => {
         }
       }
 
-
-      return res.render('search-results', {search, tracks, currentUser})
+      
+      // return res.render('search-results', {search, tracks, currentUser})
+      return res.send({tracks});
       
     });
     

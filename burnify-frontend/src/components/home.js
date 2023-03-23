@@ -4,6 +4,7 @@ import axios from 'axios';
 function HomePage({token}) {
     // const [ home, setHome ] = useState("")
     const [search, setSearch] = useState("");
+    let [tracks, setTracks] = useState([]);
 
 	// useEffect(() => {
 	// 	axios.get("http://localhost:3001/home").then(function(response) {
@@ -11,17 +12,22 @@ function HomePage({token}) {
     //         console.log(response)
 	// 	})
 	// }, [])
-
+    
     async function handleSubmit(e) {
 		e.preventDefault()
 		try {
-			await axios.post("http://localhost:3001/search", {
+			const res = await axios.post("http://localhost:3001/search", {
 				search
 			})
+            setTracks(res.data.tracks);
+            // setTracks = res.data.tracks.map(({name, id}) => {return {name, id}});
+            console.log("Tracks: " + tracks[0].name)
+
 		} catch (error) {
 			console.error(error)
 		}
 	}
+    
 
     return(
         <div>
@@ -33,6 +39,15 @@ function HomePage({token}) {
                 <button type="submit" class="btn-outline-primary form-control-lg">Search</button>
 
             </form>
+
+            <ul>
+            {
+                tracks.map(({name, id}) => {
+                    console.log({name})
+                    return (<li key={id}>{name}</li>)
+                })
+            }
+            </ul>
             {/* {home} */}
 
         </div>
