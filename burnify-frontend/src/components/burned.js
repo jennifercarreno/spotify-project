@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, Row, Col, Container } from 'react-bootstrap';
 import "./burned.css"
+import { Link } from 'react-router-dom';
 
 function BurnedCDs() {
     let [cds, setCds] = useState([]);
@@ -27,9 +28,13 @@ function BurnedCDs() {
                     <Col>
                         <div>
                     <Card style={{ width: '20rem' }}>
-                        <Card.Img alt="playlist cover" src={cd.tracks[0].album.images[2].url}/>
+                        <Card.Img alt="playlist cover" src={cd.tracks[0].album.images[1].url}/>
                         <Card.Body>
-                            <Card.Title>{cd.title}</Card.Title>
+                            <Card.Title><Link
+                                to={"/cd"}
+                                state={{ id: cd._id }}>
+
+                                {cd.title}</Link></Card.Title>
                             <Card.Text>
                             Created By: {cd.created_by.username}
                             </Card.Text>

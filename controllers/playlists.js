@@ -149,7 +149,8 @@ module.exports = (app) => {
             const currentUser = req.user;
             const search = req.body.search;
             const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
-            return res.render('playlist-show', {playlist, currentUser, search})
+            return res.send({playlist})
+            // return res.render('playlist-show', {playlist, currentUser, search})
           }
             
         } catch(err){
