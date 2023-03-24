@@ -2,10 +2,8 @@
 import './App.css';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
-import {Link } from "react-router-dom";
+import React from 'react';
 import HomePage from './components/home';
-import LoginPage from './components/login';
 import Navbar from './components/navbar';
 function App() {
 

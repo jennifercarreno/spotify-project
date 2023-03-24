@@ -161,7 +161,7 @@ module.exports = (app) => {
 // displays all playlists
     app.get('/playlists', async (req, res) =>{
       try {
-        const currentUser = req.user;
+        // const currentUser = req.user;
         const playlists = await Playlist.find({}).lean().populate('created_by')
         let displayed_playlists = []
 
@@ -172,7 +172,8 @@ module.exports = (app) => {
 
           }
         }
-        return res.render('playlists', {displayed_playlists, currentUser})          
+        return res.send({displayed_playlists});
+        // return res.render('playlists', {displayed_playlists, currentUser})          
 
       } catch(err) {
           console.log(err.message);
