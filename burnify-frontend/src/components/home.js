@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from "styled-components";
 import "./home.css"
 import Navbar from './navbar';
+import { Row } from 'react-bootstrap';
 const msToMinutesAndSeconds = (ms) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = ((ms % 60000) / 1000).toFixed(0);
@@ -31,14 +32,26 @@ function HomePage() {
     return(
         <div>
             {/* <Navbar /> */}
-            <h3>this is the home page</h3>
-            <small>Jennifer's Experiment with the Spotify API</small>
-            <form onSubmit={handleSubmit}>
+            <Container>
+                <Row className="home-row">
+                    <div className="col">  
+                        <img src="http://pixelartmaker-data-78746291193.nyc3.digitaloceanspaces.com/image/3dfc9e0b9b0a10e.png" style={{width: "150px"}} alt="logo"/>
+                    </div>
+                    <div className="col">
+                    <h1 style={{ textAlign: 'center' }}>Burnify</h1>
 
-                <input type="text" placeholder="Search for a song..." id="search" name="search" class="col-lg-9 form-control-lg" value={search} onChange={(e) => setSearch(e.target.value)}/>
-                <button type="submit" class="btn-outline-primary form-control-lg">Search</button>
+                    </div>
+                {/* <h2 style={{ textAlign: 'center' }}>Burnify</h2> */}
+                </Row>
 
-            </form>
+                
+                <form onSubmit={handleSubmit} className="form">
+
+                    <input type="text" placeholder="Search for a song..." id="search" name="search" class="col-lg-9 form-control-lg" value={search} onChange={(e) => setSearch(e.target.value)}/>
+                    <button type="submit" class="btn-outline-primary form-control-lg">Search</button>
+
+                </form>
+            </Container >
             <Container >
             <ul>
             {
@@ -78,7 +91,6 @@ function HomePage() {
             </ul>
             </Container>
 
-            {/* {home} */}
 
         </div>
     )
@@ -115,7 +127,9 @@ const Container = styled.div`
         display: flex;
         flex-direction: column;
       }
+
     }
+
   
 `;
 

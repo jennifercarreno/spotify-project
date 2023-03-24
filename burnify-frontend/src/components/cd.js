@@ -3,10 +3,14 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { AiFillClockCircle } from "react-icons/ai"
 import "./cd.css"
+import Navbar from "./navbar";
+import { Container, Button } from "react-bootstrap";
+
 export default function Cd() {
     // console.log(useLocation())
     const { state } = useLocation()
     let [playlist, setPlaylist] = useState([]);
+    let [tracks, setTracks] = useState([]);
 
     const msToMinutesAndSeconds = (ms) => {
         const minutes = Math.floor(ms / 60000);
@@ -18,25 +22,26 @@ export default function Cd() {
         axios.get(`http://localhost:3001/playlist/${state.id}`)
         .then(res => {
             // const cds = res.data;
-            // console.log(res.data.playlist.tracks);
+            console.log(res.data.playlist);
             setPlaylist(res.data.playlist);
+            setTracks(res.data.playlist.tracks);
             
         })
     })
     return(
         <div>
-        <h3>this is the cd detail page</h3>
-        <h1>{playlist.id}</h1>
+       <Navbar />
 
-        <>
+        <Container >
                 <div className="playlist">
                     <div className="coverImage">
-                        <img src={playlist.tracks[0].album.images[1].url} alt="playlist" />
+                        <img src={tracks[0]?.album.images[1].url} alt="playlist" />
                     </div>
                     <div className="details">
                         <span className="type">PLAYLIST</span>
                         <h1 className="title">{playlist.title}</h1>
                         <p className="description">{playlist.description}</p>
+                        <Button className="spotify-button"><a href={playlist.playlist_url}>Open in Spotify</a></Button>{' '}
                     </div>
                 </div>
                 <div className="list">
@@ -90,7 +95,7 @@ export default function Cd() {
                         )}
                     </div>
                 </div>
-                </>
+                </Container>
         </div>
     )
 }

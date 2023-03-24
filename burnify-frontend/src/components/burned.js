@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Card, Row, Col, Container } from 'react-bootstrap';
 import "./burned.css"
 import { Link } from 'react-router-dom';
+import Navbar from './navbar';
 
 function BurnedCDs() {
     let [cds, setCds] = useState([]);
@@ -19,22 +20,23 @@ function BurnedCDs() {
     console.log(cds);
     return (
         <div>
-        <h3>burned cd page</h3>
+            <Navbar />
             <ul>
                 <Container>
-                <Row>
+                <Row xxl={{cols:12}}>
             {
             cds.map((cd, id) => {return(
-                    <Col>
+                    <Col style={{margin:"0px"}} xxl={3}>
                         <div>
-                    <Card style={{ width: '20rem' }}>
+                            {/* style={{width:"10rem", margin:"20px"}} */}
+                    <Card style={{width:"10rem", margin:"20px"}} className="card">
                         <Card.Img alt="playlist cover" src={cd.tracks[0].album.images[1].url}/>
-                        <Card.Body>
-                            <Card.Title><Link
+                        <Card.Body className="playlist-card">
+                            <Card.Title ><Link
                                 to={"/cd"}
-                                state={{ id: cd._id }}>
+                                state={{ id: cd._id }}><h4 className="cardTitle">{cd.title}</h4>
 
-                                {cd.title}</Link></Card.Title>
+                                </Link></Card.Title>
                             <Card.Text>
                             Created By: {cd.created_by.username}
                             </Card.Text>

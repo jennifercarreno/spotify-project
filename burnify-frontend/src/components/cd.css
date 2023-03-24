@@ -1,5 +1,5 @@
 .playlist {
-    margin: 0 2rem;
+    margin: 2rem 2rem;
     display: flex;
     align-items: center;
     gap: 2rem;
@@ -69,6 +69,32 @@ flex-direction: column;
 
 .coverImage {
     /* height: 20rem; */
-    width:20rem;
+    width:15rem;
+}
+
+body {
+    background-color: #201b1e;
 }
         
+Container {
+    margin-top: 20px;
+}
+
+.spotify-button {
+    width: 150px;
+    background-color: #84B54A;
+    border-color: #84B54A;
+}
+.spotify-button:hover {
+    background-color: #6d943d;
+    border-color: #6d943d;
+
+
+}
+a {
+    color:white
+}
+
+a:hover{
+    color: white;
+}
