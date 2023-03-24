@@ -5,6 +5,7 @@ import SignupPage from "./components/signup";
 import App from "../src/App.js"
 import { createRoot } from "react-dom/client";
 import HomePage from "./components/home";
+import BurnedCDs from "./components/burned";
 
 
 const container = document.getElementById('root');
@@ -17,6 +18,8 @@ const root = createRoot(container);
       <Route path="/loginpage" element={<LoginPage />} />
       <Route path="/signuppage" element={<SignupPage />} />
       <Route path="/home" element={<HomePage />} />
+      <Route path="/burnedcds" element={<BurnedCDs />} />
+
 
    </Routes>
    </BrowserRouter>,

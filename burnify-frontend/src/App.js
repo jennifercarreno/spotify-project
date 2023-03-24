@@ -6,19 +6,18 @@ import React, { useState } from 'react';
 import {Link } from "react-router-dom";
 import HomePage from './components/home';
 import LoginPage from './components/login';
+import Navbar from './components/navbar';
 function App() {
-  const [token, setToken] = useState("");
 
-  if(!token) {
-    return <LoginPage setToken={setToken} />
-  }
 
   return (
     <div className="App">
+      <Navbar />
+
       <h3>this is the "home" app page</h3>
-      <Link to="/loginpage"><Button>Login</Button></Link>{' '}
-      <Link to="/signuppage"><Button>Sign Up</Button></Link>{' '}
-      <HomePage token={token} />
+      {/* <Link to="/loginpage"><Button>Login</Button></Link>{' '}
+      <Link to="/signuppage"><Button>Sign Up</Button></Link>{' '} */}
+      <HomePage />
 
     </div>
   );
