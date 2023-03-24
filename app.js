@@ -66,7 +66,7 @@ app.get('/', (req, res) => {
 app.get('/home', (req, res) => {
   const currentUser = req.user;
   console.log(currentUser);
-  return res.send({currentUser});
+  return res.render('home',{currentUser});
 
 });
 
@@ -115,8 +115,8 @@ app.post('/search', async(req, res) => {
       }
 
       
-      // return res.render('search-results', {search, tracks, currentUser})
-      return res.send({tracks});
+      return res.render('search-results', {search, tracks, currentUser})
+      // return res.send({tracks});
       
     });
     

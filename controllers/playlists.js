@@ -6,6 +6,7 @@ const user = require('../models/user');
 var client_id = '3d0b95c610624b5d946ad0db07b6b683'; // Your client id
 var client_secret = process.env.SECRET; // Your secret
 var access = process.env.ACCESS; // Your secret
+var refresh = process.env.refresh;
 var express = require('express')
 var bodyParser = require('body-parser')
 
@@ -20,6 +21,7 @@ app.use(bodyParser.json())
 
 
 //spotiify api auth
+
 var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: {
@@ -32,6 +34,30 @@ var authOptions = {
   };
 
 module.exports = (app) => {
+  
+  app.get('/refresh_token', function(req, res) {
+
+    var refresh_token = req.query.refresh_token;
+    var authOptions = {
+      url: 'https://accounts.spotify.com/api/token',
+      headers: { 'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64')) },
+      form: {
+        grant_type: 'refresh_token',
+        refresh_token: refresh_token
+      },
+      json: true
+    };
+  
+    request.post(authOptions, function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        var access_token = body.access_token;
+        res.send({
+          'access_token': access_token
+        });
+        return res.render('home')
+      }
+    });
+  });
 
     // create new playlist 
 
@@ -149,8 +175,8 @@ module.exports = (app) => {
             const currentUser = req.user;
             const search = req.body.search;
             const playlist = await Playlist.findById(req.params.id).lean().populate('created_by');
-            return res.send({playlist})
-            // return res.render('playlist-show', {playlist, currentUser, search})
+            // return res.send({playlist})
+            return res.render('playlist-show', {playlist, currentUser, search})
           }
             
         } catch(err){
@@ -162,7 +188,7 @@ module.exports = (app) => {
 // displays all playlists
     app.get('/playlists', async (req, res) =>{
       try {
-        // const currentUser = req.user;
+        const currentUser = req.user;
         const playlists = await Playlist.find({}).lean().populate('created_by')
         let displayed_playlists = []
 
@@ -173,8 +199,8 @@ module.exports = (app) => {
 
           }
         }
-        return res.send({displayed_playlists});
-        // return res.render('playlists', {displayed_playlists, currentUser})          
+        // return res.send({displayed_playlists});
+        return res.render('playlists', {displayed_playlists, currentUser})          
 
       } catch(err) {
           console.log(err.message);
